@@ -196,6 +196,7 @@ def updateCompanyDetails(d):
     global database,cursor
     try:
         cursor.execute("UPDATE user_info SET email=%s,phone=%s,company_name=%s,company_address=%s,gst_no=%s WHERE username = %s",[d['email'],d['phone_no'],d['company_name'],d['company_address'],d['gst_no'],d['username']] )
+        print('database updated')
         database.commit()
         return True
     except Exception as e:

@@ -390,7 +390,7 @@
                   />
                 </div>
               </div>
-
+              <input type="hidden" name="form_type" value="invoice" />
               <button
                 type="submit"
                 class="btn btn-primary mt-4"
@@ -503,8 +503,12 @@
                 required
               />
             </div>
-
-            <button type="submit" class="btn btn-primary btn-block">
+            <input type="hidden" name="form_type" value="companyupdate" />
+            <button
+              type="submit"
+              class="btn btn-primary btn-block"
+              value="companyupdate"
+            >
               Submit
             </button>
           </form>
@@ -556,6 +560,11 @@
           document.getElementById("tab1").classList.remove("active");
           document.getElementById("tab6-link").classList.add("active");
           document.getElementById("tab6").classList.add("active");
+          document.getElementById("tab1-link").classList.add("d-none");
+          document.getElementById("tab2-link").classList.add("d-none");
+          document.getElementById("tab3-link").classList.add("d-none");
+          document.getElementById("tab4-link").classList.add("d-none");
+          document.getElementById("tab5-link").classList.add("d-none");
         }
       }
     </script>

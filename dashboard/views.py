@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 from userlogin import views as userLogin_views
 from database import db_operations as db
 
@@ -62,10 +62,12 @@ def companyRegister(username,email,password):
 
 def companyDetails(request):
     global currentUser
+    print('companyDetails')
     if request.method == 'POST':
-        # Check which form was submitted
+        print('post')
         form_type = request.POST.get('form_type')
-        if form_type == 'company':
+        if form_type == 'companyupdate':
+            print('in')
             # username = request.POST.get("username")
             email = request.POST.get("email")
             company_name = request.POST.get("company_name")
@@ -73,6 +75,16 @@ def companyDetails(request):
             phone_no = request.POST.get("phone_no")
             gst_no = request.POST.get("gst_no")
             
+            print(email,company_address,company_name)
+            
+            currentUser.email = email
+            currentUser.company_name = company_name
+            currentUser.company_address = company_address
+            currentUser.phone_no = phone_no
+            currentUser.gst_no = gst_no
+            
             d = {'username':currentUser.username,'email':email,'company_name':company_name,'company_address':company_address,'phone_no':phone_no,'gst_no':gst_no}
             
             db.updateCompanyDetails(d)
+            return render(request,"dashboard.html", { 'email':email,'company_name':company_name,'company_address': company_address, 'gst_no': gst_no,'phone_no':phone_no,})    
+    return render(request,"companyDetails.html")

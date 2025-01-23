@@ -22,5 +22,5 @@ from dashboard import views
 urlpatterns = [
     path('dashboard/',views.dashboard,name='dashboard'),
     path('invoicegenerate/',views.invoiceGenerate,name='invoiceGenerate'),
-    path('dashboard/',views.invoiceGenerate,name='companyDetails')
+    path('companyDetails/',views.companyDetails,name='companyDetails')
 ]
