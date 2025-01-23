@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{% block title %}{% endblock %}</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+      crossorigin="anonymous"
+    />
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+      crossorigin="anonymous"
+    ></script>
+    {% block style%}{% endblock %}
+
+    <script>
+      function displayDate() {
+        document.getElementById("currentDate").textContent +=
+          new Date().toLocaleDateString();
+
+        const currentDate = new Date();
+        const currentYear = currentDate.getFullYear();
+        let startOfYear = new Date(currentYear, 3, 1);
+        let endOfYear = new Date(currentYear + 1, 2, 31);
+
+        if (currentDate < startOfYear) {
+          startOfYear = new Date(currentYear - 1, 3, 1);
+          endOfYear = new Date(currentYear, 2, 31);
+        }
+
+        document.getElementById(
+          "currentPeriod"
+        ).textContent += `${startOfYear.getFullYear()} - ${endOfYear.getFullYear()}`;
+      }
+    </script>
+  </head>
+
+  <body onload="displayDate()">
+    <div class="container-fluid">
+      <nav
+        id="navbar-example"
+        class="navbar navbar-expand-lg navbar-light bg-light fixed-top"
+      >
+        <div class="container-fluid">
+          <a class="navbar-brand" href="{% url 'home' %}">
+            <img src="{% static 'logo.png' %}" alt="Logo" width="90" />
+          </a>
+          <button
+            class="navbar-toggler"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+          >
+            <span class="fa fa-bars"></span> Menu
+          </button>
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+              <li class="nav-item">
+                <a class="nav-link active" href="{% url 'home' %}">Home</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </nav>
+      {% block content %}{% endblock %}
+    </div>
+  </body>
+</html>

@@ -1,0 +1,72 @@
+{% extends 'format.html' %} {% load static %} {% block style%}
+<style>
+  body {
+    background-color: #f8f9fa;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .gradient-btn {
+    background-image: linear-gradient(75deg, #00dbd1 10%, #6051fb 90%);
+    border: none;
+    color: white;
+    font-weight: 500;
+  }
+  .card {
+    background-color: rgba(52, 58, 64, 0.95);
+    border-radius: 15px;
+    padding: 2rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    max-width: 400px;
+    color: #fff;
+    margin: 8% auto;
+  }
+  .forgot-password {
+    color: #adb5bd;
+    text-decoration: none;
+  }
+  .forgot-password:hover {
+    color: #f8f9fa;
+  }
+</style>
+{%endblock%} {% block content %}
+
+<div class="card">
+  <div class="text-center">
+    <img src="{% static 'logo.png' %}" class="" width="70px" alt="" />
+  </div>
+  <h4 class="text-center my-3">Log In</h4>
+  <form action="{% url 'login' %}" method="post">
+    {% csrf_token %}
+    <div class="mb-3">
+      <label for="login-email" class="form-label">Email</label>
+      <input
+        type="text"
+        id="login-email"
+        placeholder="Enter your name"
+        class="form-control"
+        required
+        name="username"
+      />
+    </div>
+    <div class="mb-3">
+      <label for="login-password" class="form-label">Password</label>
+      <input
+        type="password"
+        id="login-password"
+        placeholder="Enter your password"
+        class="form-control"
+        required
+        name="password"
+      />
+    </div>
+    <button type="submit" class="btn gradient-btn w-100 mt-3">LOG IN</button>
+  </form>
+  <div class="text-center mt-3">
+    <p>
+      Don't have an account?
+      <a href="{% url 'signup' %}" class="text-light">Sign Up</a>
+    </p>
+  </div>
+</div>
+{%endblock%}
