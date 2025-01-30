@@ -34,26 +34,27 @@ def signupUser(request):
         
         if password != confirm_password:
             messages.error(request, "Passwords do not match.")
-            return redirect(request, 'login.html')
+            return render(request, 'signup.html')
 
         # Check if username or email already exists
         if User.objects.filter(username=name).exists():
             messages.error(request, "Username already taken.")
-            return redirect(request, 'login.html')
+            return render(request, 'signup.html')
         
         if User.objects.filter(email=email).exists():
             messages.error(request, "Email already in use.")
-            return redirect(request, 'login.html')
+            return render(request, 'signup.html')
 
         # Create new user
         try:
             user = User.objects.create_user(username=name, email=email, password=password)
             user.save()
             messages.success(request, "Signup successful! Please log in.")
-            return redirect('login')  # Redirect to the login page
+            print('sign up')
+            return redirect(request,'login.html')  # Redirect to the login page
         except Exception as e:
             messages.error(request, f"An error occurred: {str(e)}")
-            return render(request, 'login.html')
+            return redirect('login')
     
     return render(request, 'signup.html')
 
