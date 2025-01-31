@@ -37,8 +37,9 @@ def invoiceGenerate(request):
             deliveryNoteDate = request.POST.get("deliveryNoteDate")
             dispatchedThrough = request.POST.get("dispatchedThrough")
             destination = request.POST.get("destination")
-
+            selected_items = request.POST.get("selectedItems")
             print(consignee,buyer,invoiceNo,date,deliveryNote,paymentMode,dispatchDoc,deliveryNoteDate,dispatchedThrough,destination)
+            print(selected_items)  
 
     return render(request,'invoicegenerate.html',{'a':12222,'b':'dww'})
 

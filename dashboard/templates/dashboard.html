@@ -390,51 +390,127 @@
                   />
                 </div>
               </div>
-              <input type="hidden" name="form_type" value="invoice" />
-              <button
-                type="submit"
-                class="btn btn-primary mt-4"
-                value="invoice"
-              >
-                Generate Bill
-              </button>
-            </form>
 
-            <div class="mt-5">
-              <h4 class="text-center">Add Items</h4>
-              <div class="row g-3">
-                <div class="col-12 col-md-6">
-                  <label for="itemsDropdown" class="form-label"
-                    >Select Item</label
-                  >
-                  <select
-                    class="form-select"
-                    id="itemsDropdown"
-                    name="itemsDropdown"
-                  >
-                    <option selected disabled>Select Item</option>
-                    <option value="Item 1">Item 1</option>
-                    <option value="Item 2">Item 2</option>
-                  </select>
-                </div>
-
-                <div class="col-12 col-md-6 d-flex align-items-end">
-                  <button
-                    type="button"
-                    class="btn btn-primary"
-                    id="addItemButton"
-                    name="addItemButton"
-                  >
-                    Add Item
-                  </button>
+              <div class="mt-5">
+                <h4 class="text-center">Add Items</h4>
+                <div class="row justify-content-center">
+                  <div class="col-12 col-md-6">
+                    <div class="row">
+                      <div class="col-8">
+                        <select
+                          class="form-select"
+                          id="itemsDropdown"
+                          name="itemsDropdown"
+                        >
+                          <option selected disabled>Select Item</option>
+                          <option value="Item 1">Item 1</option>
+                          <option value="Item 2">Item 2</option>
+                        </select>
+                      </div>
+                      <div class="col-4">
+                        <button
+                          type="button"
+                          class="btn btn-primary"
+                          id="addItemButton"
+                          name="addItemButton"
+                        >
+                          Add Item
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-12 text-center">
+                    <h5 class="mt-4">Selected Items</h5>
+                    <ul class="list-group d-inline-block" id="itemList"></ul>
+                  </div>
                 </div>
               </div>
 
-              <h5 class="mt-4">Selected Items</h5>
-              <ul class="list-group" id="itemList"></ul>
-            </div>
+              <input
+                type="hidden"
+                id="selectedItemsInput"
+                name="selectedItems"
+              />
+              <input type="hidden" name="form_type" value="invoice" />
+              <div class="d-flex justify-content-center">
+                <button
+                  type="submit"
+                  class="btn btn-primary mt-4"
+                  value="invoice"
+                >
+                  Generate Bill
+                </button>
+              </div>
+            </form>
           </div>
         </div>
+
+        <div class="tap_pane" id="tab3">
+          <div class="container mt-5">
+            <h2 class="text-center mb-4">Inventory Management</h2>
+
+            <!-- Add Item Form -->
+            <div class="card p-3 mb-4">
+              <h5 class="mb-3">Add New Item</h5>
+              <div class="row g-3">
+                <div class="col-md-2">
+                  <input
+                    type="text"
+                    id="itemId"
+                    class="form-control"
+                    placeholder="ID"
+                  />
+                </div>
+                <div class="col-md-4">
+                  <input
+                    type="text"
+                    id="itemName"
+                    class="form-control"
+                    placeholder="Item Name"
+                  />
+                </div>
+                <div class="col-md-2">
+                  <input
+                    type="number"
+                    id="itemQuantity"
+                    class="form-control"
+                    placeholder="Quantity"
+                  />
+                </div>
+                <div class="col-md-2">
+                  <input
+                    type="number"
+                    id="purchasePrice"
+                    class="form-control"
+                    placeholder="Purchase Price"
+                  />
+                </div>
+                <div class="col-md-2 d-flex align-items-center">
+                  <button class="btn btn-success w-100" onclick="addItem()">
+                    Add
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Inventory Table -->
+            <table class="table table-bordered table-striped text-center">
+              <thead class="table-dark">
+                <tr>
+                  <th>ID</th>
+                  <th>Item Name</th>
+                  <th>Quantity</th>
+                  <th>Purchase Price</th>
+                  <th>Delete</th>
+                </tr>
+              </thead>
+              <tbody id="inventoryTable">
+                <!-- Items will be dynamically added here -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
         <div class="tab-pane" id="tab6">
           <form
             method="post"
@@ -531,10 +607,23 @@
               listItem.textContent = selectedItem;
 
               document.getElementById("itemList").appendChild(listItem);
+              updateHiddenInput();
             } else {
               alert("Please select an item to add.");
             }
           });
+
+        function updateHiddenInput() {
+          const items = [];
+          document.querySelectorAll("#itemList li").forEach((li) => {
+            items.push(li.textContent);
+          });
+          x = "";
+          for (let i = 0; i < items.length; i++) {
+            x += items[i] + "||";
+          }
+          document.getElementById("selectedItemsInput").value = x;
+        }
       });
       document.addEventListener("DOMContentLoaded", function () {
         const sidebar = document.getElementById("sidebarMenu");
@@ -566,6 +655,48 @@
           document.getElementById("tab4-link").classList.add("d-none");
           document.getElementById("tab5-link").classList.add("d-none");
         }
+      }
+
+      function addItem() {
+        // Get input values
+        let itemId = document.getElementById("itemId").value;
+        let itemName = document.getElementById("itemName").value;
+        let itemQuantity = document.getElementById("itemQuantity").value;
+        let purchasePrice = document.getElementById("purchasePrice").value;
+
+        // Validate inputs
+        if (!itemId || !itemName || !itemQuantity || !purchasePrice) {
+          alert("Please fill all fields!");
+          return;
+        }
+
+        // Get table body
+        let table = document.getElementById("inventoryTable");
+
+        // Create a new row
+        let newRow = table.insertRow();
+
+        // Insert columns with values
+        newRow.innerHTML = `
+                <td>${itemId}</td>
+                <td>${itemName}</td>
+                <td>${itemQuantity}</td>
+                <td>${purchasePrice}</td>
+                <td>
+                    <button class="btn btn-danger btn-sm" onclick="deleteItem(this)">Delete</button>
+                </td>
+            `;
+
+        // Clear input fields
+        document.getElementById("itemId").value = "";
+        document.getElementById("itemName").value = "";
+        document.getElementById("itemQuantity").value = "";
+        document.getElementById("purchasePrice").value = "";
+      }
+
+      function deleteItem(button) {
+        // Remove the row of the clicked button
+        button.closest("tr").remove();
       }
     </script>
   </body>
