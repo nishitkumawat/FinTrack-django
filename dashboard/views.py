@@ -1,6 +1,10 @@
+import json
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import redirect, render
 from userlogin import views as userLogin_views
 from database import db_operations as db
+from django.views.decorators.csrf import csrf_exempt
+
 
 currentUser = None
 
@@ -10,17 +14,18 @@ def dashboard(request):
     global currentUser
     db.create_connection()
     companyLogin()
-    print(currentUser)
+    inventory = db.inventory(currentUser.company_id)
+    
     return render(request,"dashboard.html", {
         'email':currentUser.email,
         'company_name': currentUser.company_name,
         'company_address': currentUser.company_address,
         'gst_no': currentUser.gst_no,
         'phone_no': currentUser.phone_no,
+        'inventory':inventory,
     })
 
 def invoiceGenerate(request):
-
     global currentUser
     if request.method == "POST":
         
@@ -43,6 +48,18 @@ def invoiceGenerate(request):
 
     return render(request,'invoicegenerate.html',{'a':12222,'b':'dww'})
 
+@csrf_exempt
+def handle_action(request):
+    if request.method == "POST":
+        data = json.loads(request.body.decode('utf-8'))
+        action = data.get("action")
+        if action == "updateInventory":
+            # db.updateInventory()
+            print("xaz")
+            table_data= data.get("table_data")
+            print(table_data)
+        return JsonResponse({"message": "Inventory updated!"})
+    return JsonResponse({"message": "Invalid request!"})
 
 def companyLogin():
     global currentUser

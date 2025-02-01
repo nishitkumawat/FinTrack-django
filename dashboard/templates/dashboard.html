@@ -4,6 +4,8 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="csrf-token" content="{{ csrf_token }}" />
+
     <title>Responsive Sidebar with Tab Panes</title>
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
@@ -445,7 +447,7 @@
           </div>
         </div>
 
-        <div class="tap_pane" id="tab3">
+        <div class="tab-pane fade" id="tab3">
           <div class="container mt-5">
             <h2 class="text-center mb-4">Inventory Management</h2>
 
@@ -501,11 +503,38 @@
                   <th>Item Name</th>
                   <th>Quantity</th>
                   <th>Purchase Price</th>
-                  <th>Delete</th>
+                  <th>Actions</th>
                 </tr>
               </thead>
               <tbody id="inventoryTable">
-                <!-- Items will be dynamically added here -->
+                {% for item,des in inventory.items %}
+                <tr>
+                  <td>{{ item }}</td>
+                  {% for d in des %}
+                  <td>{{ d }}</td>
+                  {% endfor %}
+                  <td>
+                    <button
+                      class="btn btn-success btn-sm"
+                      onclick="openEditModal(this)"
+                    >
+                      Edit
+                    </button>
+                    <button
+                      class="btn btn-danger btn-sm"
+                      onclick="deleteItem(this)"
+                    >
+                      Delete
+                    </button>
+                  </td>
+                </tr>
+                {% endfor %}
+                <input
+                  type="hidden"
+                  name="table_data1"
+                  id="table_data"
+                  value="x"
+                />
               </tbody>
             </table>
           </div>
@@ -590,6 +619,64 @@
           </form>
         </div>
       </div>
+
+      <!-- Edit Item Modal -->
+      <div
+        class="modal fade"
+        id="editItemModal"
+        tabindex="-1"
+        aria-labelledby="editItemModalLabel"
+        aria-hidden="true"
+      >
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="editItemModalLabel">Edit Item</h5>
+              <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+            </div>
+            <div class="modal-body">
+              <input type="hidden" id="editItemId" />
+
+              <div class="mb-3">
+                <label for="editItemName" class="form-label">Item Name</label>
+                <input type="text" id="editItemName" class="form-control" />
+              </div>
+
+              <div class="mb-3">
+                <label for="editPurchasePrice" class="form-label"
+                  >Purchase Price</label
+                >
+                <input
+                  type="number"
+                  id="editPurchasePrice"
+                  class="form-control"
+                />
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-secondary"
+                data-bs-dismiss="modal"
+              >
+                Close
+              </button>
+              <button
+                type="button"
+                class="btn btn-primary"
+                onclick="saveChanges()"
+              >
+                Save changes
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
@@ -644,7 +731,7 @@
 
       function onLoadMethod() {
         inputField = document.getElementById("company_name");
-        if (inputField.value.trim() === "") {
+        if (inputField.value.trim() == "") {
           document.getElementById("tab1-link").classList.remove("active");
           document.getElementById("tab1").classList.remove("active");
           document.getElementById("tab6-link").classList.add("active");
@@ -658,45 +745,107 @@
       }
 
       function addItem() {
-        // Get input values
         let itemId = document.getElementById("itemId").value;
         let itemName = document.getElementById("itemName").value;
         let itemQuantity = document.getElementById("itemQuantity").value;
         let purchasePrice = document.getElementById("purchasePrice").value;
 
-        // Validate inputs
         if (!itemId || !itemName || !itemQuantity || !purchasePrice) {
           alert("Please fill all fields!");
           return;
         }
 
-        // Get table body
         let table = document.getElementById("inventoryTable");
 
-        // Create a new row
         let newRow = table.insertRow();
 
-        // Insert columns with values
         newRow.innerHTML = `
                 <td>${itemId}</td>
                 <td>${itemName}</td>
                 <td>${itemQuantity}</td>
                 <td>${purchasePrice}</td>
                 <td>
-                    <button class="btn btn-danger btn-sm" onclick="deleteItem(this)">Delete</button>
+                  <button class="btn btn-success btn-sm" onclick="openEditModal(this)">Edit</button>
+                  <button class="btn btn-danger btn-sm" onclick="deleteItem(this)">Delete</button>
                 </td>
+
             `;
 
-        // Clear input fields
         document.getElementById("itemId").value = "";
         document.getElementById("itemName").value = "";
         document.getElementById("itemQuantity").value = "";
         document.getElementById("purchasePrice").value = "";
+        tableJson();
       }
 
       function deleteItem(button) {
-        // Remove the row of the clicked button
         button.closest("tr").remove();
+      }
+
+      function openEditModal(button) {
+        let row = button.closest("tr");
+
+        let itemId = row.cells[0].innerText;
+        let itemName = row.cells[1].innerText;
+        let purchasePrice = row.cells[3].innerText;
+
+        document.getElementById("editItemId").value = itemId;
+        document.getElementById("editItemName").value = itemName;
+        document.getElementById("editPurchasePrice").value = purchasePrice;
+
+        var myModal = new bootstrap.Modal(
+          document.getElementById("editItemModal")
+        );
+        myModal.show();
+      }
+
+      function saveChanges() {
+        let itemId = document.getElementById("editItemId").value;
+        let newName = document.getElementById("editItemName").value;
+        let newPrice = document.getElementById("editPurchasePrice").value;
+
+        let table = document.getElementById("inventoryTable");
+        for (let row of table.rows) {
+          if (row.cells[0].innerText === itemId) {
+            row.cells[1].innerText = newName;
+            row.cells[3].innerText = newPrice;
+            break;
+          }
+        }
+
+        var modal = bootstrap.Modal.getInstance(
+          document.getElementById("editItemModal")
+        );
+        modal.hide();
+        tableJson();
+        handleAction("updateInventory");
+      }
+
+      function handleAction(action) {
+        fetch("/dashboard/handle-action/", {
+          method: "POST",
+          headers: {
+            "X-CSRFToken": document
+              .querySelector('meta[name="csrf-token"]')
+              .getAttribute("content"),
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ action: action }),
+        })
+          .then((response) => response.json())
+          .then((data) => alert(data.message))
+          .catch((error) => console.error("Error:", error));
+      }
+
+      function tableJson() {
+        tableData = "[";
+        let table = document.getElementById("inventoryTable");
+        for (let row of table.rows) {
+          tableData += `${row.cells[0].innerText}|${row.cells[1].innerText}|${row.cells[2].innerText}|${row.cells[3].innerText},`;
+        }
+        document.getElementById("table_data").value = tableData + "]";
+        console.log(document.getElementById("table_data").value);
+        return document.getElementById("table_data").value;
       }
     </script>
   </body>

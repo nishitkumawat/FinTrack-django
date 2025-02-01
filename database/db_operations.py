@@ -213,6 +213,17 @@ def listOfUsername():
     for i in result:
         r.append(i[0])
     return r
+
+def inventory(company_id):
+    global database,cursor
+    cursor.execute("SELECT * FROM inventory WHERE company_id = %s",[company_id])
+    result = cursor.fetchall()
+    r = dict()
+    for i in result:
+        x = [i[2],i[3],i[4]]
+        r[i[1]] = x
+    print(r)
+    return r
     
         
 # if _name__ == "__main__":
