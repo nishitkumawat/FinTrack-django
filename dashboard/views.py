@@ -27,10 +27,11 @@ def dashboard(request):
 
 def invoiceGenerate(request):
     global currentUser
+    print("asds")
     if request.method == "POST":
         
-        form_type = request.POST.get('form_type')
-        if form_type == 'invoice':
+        # form_type = request.POST.get('form_type')
+        # if form_type == 'invoice':
         
             consignee = request.POST.get("consignee")
             buyer = request.POST.get("buyer")
@@ -43,8 +44,17 @@ def invoiceGenerate(request):
             dispatchedThrough = request.POST.get("dispatchedThrough")
             destination = request.POST.get("destination")
             selected_items = request.POST.get("selectedItems")
+            tax_input1 = request.POST.get("taxInput")
+            tax_input = eval(f"{tax_input1}")
+            sgst = tax_input[0]
+            cgst = tax_input[1]
+            igst = tax_input[2]
+            
+            print("invoice handled")
             print(consignee,buyer,invoiceNo,date,deliveryNote,paymentMode,dispatchDoc,deliveryNoteDate,dispatchedThrough,destination)
             print(selected_items)  
+            print(tax_input)
+            print(sgst,cgst,igst)
 
     return render(request,'invoicegenerate.html',{'a':12222,'b':'dww'})
 
@@ -54,9 +64,8 @@ def handle_action(request):
         data = json.loads(request.body.decode('utf-8'))
         action = data.get("action")
         if action == "updateInventory":
-            # db.updateInventory()
             print("xaz")
-            table_data= data.get("table_data")
+            table_data = request.POST.get("table_data1")
             print(table_data)
         return JsonResponse({"message": "Inventory updated!"})
     return JsonResponse({"message": "Invalid request!"})

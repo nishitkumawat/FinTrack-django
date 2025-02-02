@@ -132,6 +132,20 @@
           margin: 0 10px;
         }
       }
+      #itemTable th,
+      #itemTable td {
+        text-align: center;
+      }
+
+      #itemTable {
+        width: 80%;
+        margin: 0 auto;
+        margin-top: 20px;
+      }
+
+      #itemTable .table-bordered {
+        border: 1px solid #dee2e6;
+      }
     </style>
   </head>
   <body onload="onLoadMethod()">
@@ -398,16 +412,35 @@
                 <div class="row justify-content-center">
                   <div class="col-12 col-md-6">
                     <div class="row">
-                      <div class="col-8">
+                      <div class="col-4">
                         <select
-                          class="form-select"
+                          class="form-select w-100"
                           id="itemsDropdown"
                           name="itemsDropdown"
                         >
                           <option selected disabled>Select Item</option>
-                          <option value="Item 1">Item 1</option>
-                          <option value="Item 2">Item 2</option>
+                          {% for key, value in inventory.items %}
+                          <option>
+                            {{key}}. {{ value.0 }}. (AQ: {{ value.1 }})
+                          </option>
+                          {% endfor %}
                         </select>
+                      </div>
+                      <div class="col-4 d-flex gap-2">
+                        <input
+                          type="number"
+                          placeholder="Quantity"
+                          class="form-control"
+                          name="billquantity"
+                          id="billquantity"
+                        />
+                        <input
+                          type="number"
+                          placeholder="Price"
+                          class="form-control"
+                          name="billprice"
+                          id="billprice"
+                        />
                       </div>
                       <div class="col-4">
                         <button
@@ -423,7 +456,42 @@
                   </div>
                   <div class="col-12 text-center">
                     <h5 class="mt-4">Selected Items</h5>
-                    <ul class="list-group d-inline-block" id="itemList"></ul>
+                    <table class="table table-bordered" id="itemTable">
+                      <thead>
+                        <tr>
+                          <th>ID</th>
+                          <th>Name</th>
+                          <th>Quantity</th>
+                          <th>Rate</th>
+                          <th>Price</th>
+                        </tr>
+                      </thead>
+                      <tbody id="itemTableBody">
+                        <!-- Item rows will be added here dynamically -->
+                      </tbody>
+                      <tfoot>
+                        <tr>
+                          <td colspan="4">Total</td>
+                          <td id="totalprice">0</td>
+                        </tr>
+                        <tr>
+                          <td colspan="4">SGST (%)</td>
+                          <td id="sgstAmount">0</td>
+                        </tr>
+                        <tr>
+                          <td colspan="4">CGST (%)</td>
+                          <td id="cgstAmount">0</td>
+                        </tr>
+                        <tr>
+                          <td colspan="4">IGST (%)</td>
+                          <td id="igstAmount">0</td>
+                        </tr>
+                        <tr>
+                          <td colspan="4"><b>Grand Total</b></td>
+                          <td id="grandTotal"><b>0</b></td>
+                        </tr>
+                      </tfoot>
+                    </table>
                   </div>
                 </div>
               </div>
@@ -433,11 +501,21 @@
                 id="selectedItemsInput"
                 name="selectedItems"
               />
+              <input type="hidden" id="taxInput" name="taxInput" />
               <input type="hidden" name="form_type" value="invoice" />
               <div class="d-flex justify-content-center">
                 <button
+                  type="button"
+                  class="btn btn-warning m-4"
+                  data-bs-toggle="modal"
+                  data-bs-target="#taxModal"
+                >
+                  Add Tax
+                </button>
+
+                <button
                   type="submit"
-                  class="btn btn-primary mt-4"
+                  class="btn btn-primary m-4"
                   value="invoice"
                 >
                   Generate Bill
@@ -446,7 +524,74 @@
             </form>
           </div>
         </div>
-
+        <div
+          class="modal fade"
+          id="taxModal"
+          tabindex="-1"
+          aria-labelledby="taxModalLabel"
+          aria-hidden="true"
+        >
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="taxModalLabel">Apply GST</h5>
+                <button
+                  type="button"
+                  class="btn-close"
+                  data-bs-dismiss="modal"
+                  aria-label="Close"
+                ></button>
+              </div>
+              <div class="modal-body">
+                <div class="mb-3">
+                  <label for="sgst" class="form-label">SGST (%)</label>
+                  <input
+                    type="number"
+                    class="form-control tax-input"
+                    id="sgst"
+                    min="0"
+                    max="100"
+                    value="0"
+                  />
+                </div>
+                <div class="mb-3">
+                  <label for="cgst" class="form-label">CGST (%)</label>
+                  <input
+                    type="number"
+                    class="form-control tax-input"
+                    id="cgst"
+                    min="0"
+                    max="100"
+                    value="0"
+                  />
+                </div>
+                <div class="mb-3">
+                  <label for="igst" class="form-label">IGST (%)</label>
+                  <input
+                    type="number"
+                    class="form-control tax-input"
+                    id="igst"
+                    min="0"
+                    max="100"
+                    value="0"
+                  />
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button
+                  type="button"
+                  class="btn btn-secondary"
+                  data-bs-dismiss="modal"
+                >
+                  Close
+                </button>
+                <button type="button" class="btn btn-primary" id="applyTax">
+                  Apply Tax
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
         <div class="tab-pane fade" id="tab3">
           <div class="container mt-5">
             <h2 class="text-center mb-4">Inventory Management</h2>
@@ -529,12 +674,6 @@
                   </td>
                 </tr>
                 {% endfor %}
-                <input
-                  type="hidden"
-                  name="table_data1"
-                  id="table_data"
-                  value="x"
-                />
               </tbody>
             </table>
           </div>
@@ -666,6 +805,12 @@
               >
                 Close
               </button>
+              <input
+                type="hidden"
+                name="table_data1"
+                id="table_data"
+                value="x"
+              />
               <button
                 type="button"
                 class="btn btn-primary"
@@ -682,171 +827,201 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
       document.addEventListener("DOMContentLoaded", function () {
-        document
-          .getElementById("addItemButton")
-          .addEventListener("click", function () {
-            const dropdown = document.getElementById("itemsDropdown");
-            const selectedItem = dropdown.options[dropdown.selectedIndex].text;
-
-            if (dropdown.selectedIndex !== 0) {
-              const listItem = document.createElement("li");
-              listItem.className = "list-group-item";
-              listItem.textContent = selectedItem;
-
-              document.getElementById("itemList").appendChild(listItem);
-              updateHiddenInput();
-            } else {
-              alert("Please select an item to add.");
-            }
-          });
-
-        function updateHiddenInput() {
-          const items = [];
-          document.querySelectorAll("#itemList li").forEach((li) => {
-            items.push(li.textContent);
-          });
-          x = "";
-          for (let i = 0; i < items.length; i++) {
-            x += items[i] + "||";
-          }
-          document.getElementById("selectedItemsInput").value = x;
-        }
-      });
-      document.addEventListener("DOMContentLoaded", function () {
         const sidebar = document.getElementById("sidebarMenu");
         const sidebarLinks = document.querySelectorAll(".sidebar .nav-link");
 
         sidebarLinks.forEach((link) => {
           link.addEventListener("click", function () {
-            // Check screen size
             if (window.innerWidth <= 768) {
               const collapseInstance = bootstrap.Collapse.getInstance(sidebar);
               if (collapseInstance) {
-                collapseInstance.hide(); // Collapse the sidebar
+                collapseInstance.hide();
               }
             }
           });
         });
-      });
 
-      function onLoadMethod() {
-        inputField = document.getElementById("company_name");
-        if (inputField.value.trim() == "") {
-          document.getElementById("tab1-link").classList.remove("active");
-          document.getElementById("tab1").classList.remove("active");
-          document.getElementById("tab6-link").classList.add("active");
-          document.getElementById("tab6").classList.add("active");
-          document.getElementById("tab1-link").classList.add("d-none");
-          document.getElementById("tab2-link").classList.add("d-none");
-          document.getElementById("tab3-link").classList.add("d-none");
-          document.getElementById("tab4-link").classList.add("d-none");
-          document.getElementById("tab5-link").classList.add("d-none");
-        }
-      }
+        document
+          .getElementById("addItemButton")
+          .addEventListener("click", function () {
+            const dropdown = document.getElementById("itemsDropdown");
+            const selectedItemText =
+              dropdown.options[dropdown.selectedIndex].text;
+            const parts = selectedItemText.split(". ");
 
-      function addItem() {
-        let itemId = document.getElementById("itemId").value;
-        let itemName = document.getElementById("itemName").value;
-        let itemQuantity = document.getElementById("itemQuantity").value;
-        let purchasePrice = document.getElementById("purchasePrice").value;
+            if (parts.length >= 3) {
+              const selectedItemId = parts[0];
+              const selectedItem = parts[1];
+              const avaQuantity = parseInt(
+                parts[2].split(": ")[1].slice(0, -1),
+                10
+              );
+              const selectedQuantity = parseInt(
+                document.getElementById("billquantity").value,
+                10
+              );
+              const selectedPrice = parseFloat(
+                document.getElementById("billprice").value
+              );
 
-        if (!itemId || !itemName || !itemQuantity || !purchasePrice) {
-          alert("Please fill all fields!");
-          return;
-        }
+              if (
+                !isNaN(selectedQuantity) &&
+                !isNaN(avaQuantity) &&
+                selectedQuantity <= avaQuantity
+              ) {
+                const totalPrice = selectedQuantity * selectedPrice;
+                let currentTotal =
+                  parseFloat(document.getElementById("totalprice").innerText) ||
+                  0;
+                document.getElementById("totalprice").innerText = (
+                  currentTotal + totalPrice
+                ).toFixed(2);
 
-        let table = document.getElementById("inventoryTable");
+                const newRow = document.createElement("tr");
+                newRow.innerHTML = `
+                    <td>${selectedItemId}</td>
+                    <td>${selectedItem}</td>
+                    <td>${selectedQuantity}</td>
+                    <td>${selectedPrice.toFixed(2)}</td>
+                    <td>${totalPrice.toFixed(2)}</td>
+                `;
+                document.getElementById("itemTableBody").appendChild(newRow);
+                updateHiddenInput();
+                dropdown.remove(dropdown.selectedIndex);
+                applyTax();
+              } else {
+                alert("Invalid quantity values or more than available.");
+              }
+            } else {
+              alert("Invalid item format");
+            }
+          });
 
-        let newRow = table.insertRow();
+        document
+          .getElementById("applyTax")
+          .addEventListener("click", function () {
+            applyTax();
+            let taxModal = bootstrap.Modal.getInstance(
+              document.getElementById("taxModal")
+            );
+            taxModal.hide();
+          });
 
-        newRow.innerHTML = `
-                <td>${itemId}</td>
-                <td>${itemName}</td>
-                <td>${itemQuantity}</td>
-                <td>${purchasePrice}</td>
-                <td>
-                  <button class="btn btn-success btn-sm" onclick="openEditModal(this)">Edit</button>
-                  <button class="btn btn-danger btn-sm" onclick="deleteItem(this)">Delete</button>
-                </td>
+        function applyTax() {
+          let totalPrice =
+            parseFloat(document.getElementById("totalprice").innerText) || 0;
+          let sgst = parseFloat(document.getElementById("sgst").value) || 0;
+          let cgst = parseFloat(document.getElementById("cgst").value) || 0;
+          let igst = parseFloat(document.getElementById("igst").value) || 0;
 
-            `;
-
-        document.getElementById("itemId").value = "";
-        document.getElementById("itemName").value = "";
-        document.getElementById("itemQuantity").value = "";
-        document.getElementById("purchasePrice").value = "";
-        tableJson();
-      }
-
-      function deleteItem(button) {
-        button.closest("tr").remove();
-      }
-
-      function openEditModal(button) {
-        let row = button.closest("tr");
-
-        let itemId = row.cells[0].innerText;
-        let itemName = row.cells[1].innerText;
-        let purchasePrice = row.cells[3].innerText;
-
-        document.getElementById("editItemId").value = itemId;
-        document.getElementById("editItemName").value = itemName;
-        document.getElementById("editPurchasePrice").value = purchasePrice;
-
-        var myModal = new bootstrap.Modal(
-          document.getElementById("editItemModal")
-        );
-        myModal.show();
-      }
-
-      function saveChanges() {
-        let itemId = document.getElementById("editItemId").value;
-        let newName = document.getElementById("editItemName").value;
-        let newPrice = document.getElementById("editPurchasePrice").value;
-
-        let table = document.getElementById("inventoryTable");
-        for (let row of table.rows) {
-          if (row.cells[0].innerText === itemId) {
-            row.cells[1].innerText = newName;
-            row.cells[3].innerText = newPrice;
-            break;
+          if (sgst > 100 || cgst > 100 || igst > 100) {
+            alert("GST values cannot exceed 100%");
+            return;
           }
+
+          let sgstAmount = (totalPrice * sgst) / 100;
+          let cgstAmount = (totalPrice * cgst) / 100;
+          let igstAmount = (totalPrice * igst) / 100;
+          let grandTotal = totalPrice + sgstAmount + cgstAmount + igstAmount;
+          document.getElementById("taxInput").value =
+            "[" + sgst + "," + cgst + "," + igst + "]";
+          document.getElementById("sgstAmount").innerText =
+            sgstAmount.toFixed(2);
+          document.getElementById("cgstAmount").innerText =
+            cgstAmount.toFixed(2);
+          document.getElementById("igstAmount").innerText =
+            igstAmount.toFixed(2);
+          document.getElementById(
+            "grandTotal"
+          ).innerHTML = `<b>${grandTotal.toFixed(2)}</b>`;
         }
 
-        var modal = bootstrap.Modal.getInstance(
-          document.getElementById("editItemModal")
-        );
-        modal.hide();
-        tableJson();
-        handleAction("updateInventory");
-      }
+        function updateHiddenInput() {
+          const items = [];
+          document.querySelectorAll("#itemTable tbody tr").forEach((row) => {
+            const cells = row.getElementsByTagName("td");
+            items.push({
+              id: cells[0].textContent,
+              name: cells[1].textContent,
+              quantity: cells[2].textContent,
+              rate: cells[3].textContent,
+              totalPrice: cells[4].textContent,
+            });
+          });
 
-      function handleAction(action) {
-        fetch("/dashboard/handle-action/", {
-          method: "POST",
-          headers: {
-            "X-CSRFToken": document
-              .querySelector('meta[name="csrf-token"]')
-              .getAttribute("content"),
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ action: action }),
-        })
-          .then((response) => response.json())
-          .then((data) => alert(data.message))
-          .catch((error) => console.error("Error:", error));
-      }
-
-      function tableJson() {
-        tableData = "[";
-        let table = document.getElementById("inventoryTable");
-        for (let row of table.rows) {
-          tableData += `${row.cells[0].innerText}|${row.cells[1].innerText}|${row.cells[2].innerText}|${row.cells[3].innerText},`;
+          document.getElementById("selectedItemsInput").value =
+            JSON.stringify(items);
         }
-        document.getElementById("table_data").value = tableData + "]";
-        console.log(document.getElementById("table_data").value);
-        return document.getElementById("table_data").value;
-      }
+
+        document
+          .getElementById("saveChanges")
+          .addEventListener("click", function () {
+            let itemId = document.getElementById("editItemId").value;
+            let newName = document.getElementById("editItemName").value;
+            let newPrice = document.getElementById("editPurchasePrice").value;
+
+            let table = document.getElementById("inventoryTable");
+            for (let row of table.rows) {
+              if (row.cells[0].innerText === itemId) {
+                row.cells[1].innerText = newName;
+                row.cells[3].innerText = newPrice;
+                break;
+              }
+            }
+            let modal = bootstrap.Modal.getInstance(
+              document.getElementById("editItemModal")
+            );
+            modal.hide();
+          });
+
+        document
+          .getElementById("addItem")
+          .addEventListener("click", function () {
+            let itemId = document.getElementById("itemId").value;
+            let itemName = document.getElementById("itemName").value;
+            let itemQuantity = document.getElementById("itemQuantity").value;
+            let purchasePrice = document.getElementById("purchasePrice").value;
+
+            if (!itemId || !itemName || !itemQuantity || !purchasePrice) {
+              alert("Please fill all fields!");
+              return;
+            }
+
+            let table = document.getElementById("inventoryTable");
+            let newRow = table.insertRow();
+            newRow.innerHTML = `
+        <td>${itemId}</td>
+        <td>${itemName}</td>
+        <td>${itemQuantity}</td>
+        <td>${purchasePrice}</td>
+        <td>
+            <button class="btn btn-success btn-sm" onclick="openEditModal(this)">Edit</button>
+            <button class="btn btn-danger btn-sm" onclick="deleteItem(this)">Delete</button>
+        </td>
+    `;
+            document.getElementById("itemId").value = "";
+            document.getElementById("itemName").value = "";
+            document.getElementById("itemQuantity").value = "";
+            document.getElementById("purchasePrice").value = "";
+          });
+
+        window.deleteItem = function (button) {
+          button.closest("tr").remove();
+        };
+
+        window.openEditModal = function (button) {
+          let row = button.closest("tr");
+          document.getElementById("editItemId").value = row.cells[0].innerText;
+          document.getElementById("editItemName").value =
+            row.cells[1].innerText;
+          document.getElementById("editPurchasePrice").value =
+            row.cells[3].innerText;
+          let myModal = new bootstrap.Modal(
+            document.getElementById("editItemModal")
+          );
+          myModal.show();
+        };
+      });
     </script>
   </body>
 </html>
