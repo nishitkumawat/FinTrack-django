@@ -1,3 +1,4 @@
+import json
 from dotenv import load_dotenv
 import mysql.connector as connector
 import os
@@ -97,22 +98,22 @@ def register(username,email,password,phone,company_name,company_address,gst_no):
         print(e)
         return None
     
-def addToInventory (item_id,item_name,item_quantity,item_rate,rate_per):
+def addToInventory (item_id,item_name,item_quantity,item_rate):
     global database,cursor
     try:
         cursor.execute(
-            "insert into inventory(company_id,item_id,item_name,item_quantity,item_rate,rate_per  ) values(%s,%s,%s,%s,%s,%s)",
-            (views.currentUser.company_id,item_id,item_name,item_quantity,item_rate,rate_per))
+            "insert into inventory(company_id,item_id,item_name,item_quantity,item_price) values(%s,%s,%s,%s,%s)",
+            (views.currentUser.company_id,item_id,item_name,item_quantity,item_rate))
         database.commit()
         return True
     except Exception as e:
         print(e)
         return False
     
-def removeFromInventory(item_id):
+def removeFromInventory(company_id,item_id):
     global database,cursor
     try:
-        cursor.execute("DELETE FROM inventory WHERE item_id = %s",[item_id])
+        cursor.execute("DELETE FROM inventory WHERE item_id = %s and company_id = %s",[item_id,company_id])
         database.commit()
         return True
     except Exception as e:
@@ -149,15 +150,23 @@ def editItemName(item_id,new_name):
         print(e)
         return False
     
-def editItemQuantity(item_id,new_quan):
+def editInventory(item_id,item_name,item_price):
     global database,cursor
     try:
-        cursor.execute("UPDATE inventory SET item_quantity = %s WHERE item_id = %s", [new_quan,item_id])
+        cursor.execute("UPDATE inventory SET item_name = %s,item_price = %s WHERE item_id = %s", [item_name,item_price,item_id])
         database.commit()
         return True
     except Exception as e:
         print(e)
         return False
+    
+def fetchInventory(company_id):
+    global database,cursor
+    cursor.execute("SELECT * FROM inventory WHERE company_id = %s", (company_id,))
+    result = cursor.fetchall()
+    
+    return result
+    
     
 def generateBill(bill_no, bill_date, receiver_name, receiver_company_name,
             receiver_company_gstno, receiver_company_phone, receiver_company_address, items, total_amount,
@@ -203,7 +212,27 @@ def updateCompanyDetails(d):
         print(e)
         return False
     
-                
+def decQuantity(company_id,item_id,new_quantity):
+    global database,cursor
+    try:
+        cursor.execute("UPDATE inventory SET item_quantity=%s WHERE company_id = %s and item_id = %s",[new_quantity,company_id,item_id] )
+        
+        database.commit()
+        return True
+    except Exception as e:
+        print(e)
+        return False
+    
+def newInvoiceNo(comapny_id):
+    global database,cursor
+    cursor.execute("SELECT invoice_no FROM invoice where company_id= %s ORDER BY invoice_no DESC LIMIT 1;",(comapny_id,))
+
+    result = cursor.fetchone()
+    print(result)
+    if result:
+        return int(result[0])+1
+    else:
+        return 1
 
 def listOfUsername():
     global database,cursor
@@ -222,8 +251,61 @@ def inventory(company_id):
     for i in result:
         x = [i[2],i[3],i[4]]
         r[i[1]] = x
-    print(r)
     return r
+
+
+    
+def addInvoiceDetailed(d):
+    global database,cursor
+    try:
+        cursor.execute("INSERT INTO invoice(company_id, invoice_no, biller_name, biller_address, biller_phoneno, date, payment_mode, selected_items, total, grand_total, biller_gst_no, buyer_order_no, eWay_bill_number, eWay_bill_date, bill_of_lading, motor_vechile_number, ref_no, other_ref) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)",
+                       (views.currentUser.company_id,d["invoiceNo"],d["billerName"],d['billerAddress'],d['billerPhoneNo'],d['date'],d['paymentMode'], json.dumps(d['selectedItems'])  ,d['total'],d['grandTotal'], d['biller_gst_no'],d['buyer_order_no'],d['eWay_bill_number'],d['eWay_bill_date'],d['bill_of_lading'],d['motor_vechile_number'],d['ref_no'],d['other_ref']))
+        database.commit()                                                                                                                                                                                                                                          
+        return True
+    except Exception as e:
+        print(e)
+        return False
+    
+def addInvoice(d):
+    global database,cursor
+    try:
+        cursor.execute("INSERT INTO invoice(company_id, invoice_no, biller_name, biller_address, biller_phoneno, date, payment_mode, selected_items, total, grand_total) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)",
+                       (views.currentUser.company_id,d["invoiceNo"],d["billerName"],d['billerAddress'],d['billerPhoneNo'],d['date'],d['paymentMode'],json.dumps(d['selectedItems']) ,d['total'],d['grandTotal']))
+        database.commit()
+        return True
+    except Exception as e:
+        print(e)
+        return False
+    
+def addToSales(company_id,invoiceNo,billerName,billerPhoneNo,billerGstNo,date,item_name,item_rate,item_quantity,totalPrice):
+    global database,cursor
+    try:
+        cursor.execute("INSERT INTO sell(company_id, invoice_no,buyer_name, buyer_phone, buyer_gst, date, item_name, item_rate, item_quantity, item_amount) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)",
+                       (company_id,invoiceNo,billerName,billerPhoneNo,billerGstNo,date,item_name,item_rate,item_quantity,totalPrice))
+        database.commit()
+        return True
+    except Exception as e:
+        print(e)
+        return False
+    
+def calculateTurnOver(id):
+    global database,cursor
+    cursor.execute("SELECT item_amount FROM sell")
+    result = cursor.fetchall()
+    r = 0.0
+    for i in result:
+        r += float(i[0])
+    return r
+
+def calculateInventory(id):
+    global database,cursor
+    cursor.execute("SELECT * FROM inventory")
+    result = cursor.fetchall()
+    r = 0.0
+    for i in result:
+        r += float(i[3])*float(i[4])
+    return r
+    
     
         
 # if _name__ == "__main__":

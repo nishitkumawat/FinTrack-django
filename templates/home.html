@@ -18,7 +18,7 @@
 
     <style>
       section {
-        scroll-margin-top: 125px;
+        scroll-margin-top: 85px;
       }
       body {
         margin: 0;
@@ -26,7 +26,7 @@
         justify-content: center;
         align-items: center;
         min-height: 100vh;
-        padding-top: 70px;
+        padding-top: 60px;
         background-color: #f8f9fa;
       }
 
@@ -40,7 +40,7 @@
         border-color: #0d6efd !important;
       }
       .homepage-section {
-        height: 90vh;
+        height: 95vh;
         background-image: url("static/bg3.jpg");
         background-position: center;
         background-size: cover;
@@ -48,10 +48,11 @@
         display: flex;
         flex-direction: column;
         justify-content: center;
-        align-items: center;
-        text-align: center;
+        align-items: left;
+        text-align: left;
         color: white;
         margin-bottom: 30px;
+        margin-top: 0px !important;
       }
 
       .homepage-section2 {
@@ -59,6 +60,22 @@
         background-color: #333;
         color: white;
         border-radius: 15px;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .text-container {
+        opacity: 0; /* Initially hidden */
+        animation: fadeIn 1.2s ease-in-out forwards;
       }
 
       .btn-banner {
@@ -81,8 +98,11 @@
       h1 {
         text-align: center;
       }
+      .homeh1 {
+        text-align: left;
+      }
       p {
-        text-align: center;
+        text-align: left;
       }
       .card {
         transition: transform 0.3s, box-shadow 0.3s;
@@ -107,8 +127,12 @@
         flex-wrap: wrap;
         gap: 20px;
       }
+      .bg-img {
+        margin: 0 !important;
+        padding: 0 !important;
+      }
     </style>
-
+    <!-- 
     <script>
       function displayDate() {
         const currentDate = new Date();
@@ -132,24 +156,23 @@
         document.getElementById("footerYear").textContent =
           new Date().getFullYear();
       }
-    </script>
+    </script> -->
   </head>
   <body
-    onload="displayDate(); displayYear();"
     data-bs-spy="scroll"
     data-bs-target="#navbar-example"
     data-bs-offset="50"
     tabindex="0"
   >
-    <div class="container-fluid">
+    <div>
       <!-- Navbar -->
       <nav
         id="navbar-example"
-        class="navbar navbar-expand-lg navbar-light bg-light fixed-top"
+        class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top"
       >
         <div class="container-fluid">
-          <a class="navbar-brand" href="#home">
-            <img src="static/logo.png" alt="Logo" width="90" />
+          <a class="navbar-brand ms-3 bg-img" href="#home">
+            <img src="static/logo.png" alt="Logo" height="50px" />
           </a>
           <button
             class="navbar-toggler"
@@ -192,208 +215,318 @@
       <!-- Sections -->
       <section id="home" class="mb-5">
         <div class="homepage-section">
-          <div class="container-fluid m-0 p-0">
-            <h1 class="display-4 fw-bold">Welcome to FINTRACK</h1>
-            <p class="lead mb-4">
+          <div class="text-container">
+            <h1 class="display-4 fw-bold ms-3 homeh1">Welcome to FINTRACK</h1>
+            <p class="lead mb-4 ms-3">
               A Complete solution for handling your Business.<br />
               It provides you a complete overview of your business<br />
               and helps you to make informed decisions.
             </p>
-            <!-- <a
-              href="{% url 'dashboard' %}"
-              class="btn btn-outline-light btn-banner"
-              >Get Started</a
-            > -->
-            <a
-              href="{% url 'userlogin' %}"
-              class="btn btn-outline-light btn-banner"
-              >Login</a
-            >
-          </div>
-        </div>
-      </section>
-
-      <section id="services">
-        <div class="" style="margin: 40px 200px">
-          <h1 class="m-2">Services</h1>
-          <br />
-          <div class="row row-cols-1 row-cols-md-3 g-4">
-            <!-- Card 1 -->
-            <div class="col">
-              <div class="card h-100 text-center">
-                <img
-                  src="static\img1.png"
-                  class="card-img-top"
-                  alt="Symbol 1"
-                />
-                <div class="card-body">
-                  <h5 class="card-title">INVOICE</h5>
-                  <p class="card-text">
-                    This is a short description for Card 1.
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            <!-- Card 2 -->
-            <div class="col">
-              <div class="card h-100 text-center">
-                <img
-                  src="static\img4.png"
-                  class="card-img-top"
-                  alt="Symbol 2"
-                />
-                <div class="card-body">
-                  <h5 class="card-title">INVENTORY</h5>
-                  <p class="card-text">
-                    This is a short description for Card 2.
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            <!-- Card 3 -->
-            <div class="col">
-              <div class="card h-100 text-center">
-                <img
-                  src="static\img6.png"
-                  class="card-img-top"
-                  alt="Symbol 3"
-                />
-                <div class="card-body">
-                  <h5 class="card-title">BANKING</h5>
-                  <p class="card-text">
-                    This is a short description for Card 3.
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            <!-- Card 4 -->
-            <div class="col">
-              <div class="card h-100 text-center">
-                <img
-                  src="static\img5.png"
-                  class="card-img-top"
-                  alt="Symbol 4"
-                />
-                <div class="card-body">
-                  <h5 class="card-title">HISTORY</h5>
-                  <p class="card-text">
-                    This is a short description for Card 4.
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            <!-- Card 5 -->
-            <div class="col">
-              <div class="card h-100 text-center">
-                <img
-                  src="static\img2.png"
-                  class="card-img-top"
-                  alt="Symbol 5"
-                />
-                <div class="card-body">
-                  <h5 class="card-title">PORTFOLIO</h5>
-                  <p class="card-text">
-                    This is a short description for Card 5.
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            <!-- Card 6 -->
-            <div class="col">
-              <div class="card h-100 text-center">
-                <img
-                  src="static\img3.png"
-                  class="card-img-top"
-                  alt="Symbol 6"
-                />
-                <div class="card-body">
-                  <h5 class="card-title">TAX</h5>
-                  <p class="card-text">
-                    This is a short description for Card 6.
-                  </p>
-                </div>
-              </div>
+            <div class="btn-container ms-3">
+              <a
+                href="{% url 'userlogin' %}"
+                class="btn btn-outline-light btn-banner"
+                >Login</a
+              >
+              <a href="" class="btn btn-light btn-banner">Learn More</a>
             </div>
           </div>
         </div>
       </section>
 
-      <div class="container-fluid homepage-section2 p-5">
-        <div class="row align-items-center">
-          <!-- Image Section -->
-          <div class="col-md-4 text-center">
-            <img
-              src="static/features.png"
-              alt="Features"
-              class="img-fluid rounded"
-            />
-          </div>
-          <!-- Text Section -->
-          <div class="col-md-8">
-            <h2 class="mb-3">Simple to learn, easier to use</h2>
-            <p style="text-align: justify">
-              Getting started with FINTRACK is extremely simple. You can set up
-              the application in less than a minute and get started with
-              invoicing even faster. It just works the way you expect it to. And
-              with the consistency and intuitiveness in design, you will be able
-              to discover more and learn easily, as you are using FINTRACK.
-            </p>
+      <div class="container-fluid">
+        <section id="services">
+          <div class="" style="margin: 40px 200px">
+            <h1 class="m-2">Services</h1>
             <br />
-            <h2 class="mb-3">
-              Insightful, actionable and customizable reports
-            </h2>
-            <p style="text-align: justify">
-              FINTRACK comes with a diverse set of readily available business
-              reports with powerful and actionable insights, helping you make
-              informed decisions for your business growth. Be it business
-              relationships, cash or inventory, these reports will help you
-              manage all these aspects better with extremely easy discovery and
-              navigation
-            </p>
+            <div class="row row-cols-1 row-cols-md-3 g-4">
+              <!-- Card 1 -->
+              <div class="col">
+                <div class="card h-100 text-center">
+                  <img
+                    src="static\img1.png"
+                    class="card-img-top"
+                    alt="Symbol 1"
+                  />
+                  <div class="card-body">
+                    <h5 class="card-title">INVOICE</h5>
+                    <p class="card-text">
+                      This is a short description for Card 1.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Card 2 -->
+              <div class="col">
+                <div class="card h-100 text-center">
+                  <img
+                    src="static\img4.png"
+                    class="card-img-top"
+                    alt="Symbol 2"
+                  />
+                  <div class="card-body">
+                    <h5 class="card-title">INVENTORY</h5>
+                    <p class="card-text">
+                      This is a short description for Card 2.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Card 3 -->
+              <div class="col">
+                <div class="card h-100 text-center">
+                  <img
+                    src="static\img6.png"
+                    class="card-img-top"
+                    alt="Symbol 3"
+                  />
+                  <div class="card-body">
+                    <h5 class="card-title">BANKING</h5>
+                    <p class="card-text">
+                      This is a short description for Card 3.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Card 4 -->
+              <div class="col">
+                <div class="card h-100 text-center">
+                  <img
+                    src="static\img5.png"
+                    class="card-img-top"
+                    alt="Symbol 4"
+                  />
+                  <div class="card-body">
+                    <h5 class="card-title">HISTORY</h5>
+                    <p class="card-text">
+                      This is a short description for Card 4.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Card 5 -->
+              <div class="col">
+                <div class="card h-100 text-center">
+                  <img
+                    src="static\img2.png"
+                    class="card-img-top"
+                    alt="Symbol 5"
+                  />
+                  <div class="card-body">
+                    <h5 class="card-title">PORTFOLIO</h5>
+                    <p class="card-text">
+                      This is a short description for Card 5.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Card 6 -->
+              <div class="col">
+                <div class="card h-100 text-center">
+                  <img
+                    src="static\img3.png"
+                    class="card-img-top"
+                    alt="Symbol 6"
+                  />
+                  <div class="card-body">
+                    <h5 class="card-title">TAX</h5>
+                    <p class="card-text">
+                      This is a short description for Card 6.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="container py-5 text-center bg-light">
+            <div class="row justify-content-center">
+              <div class="col-md-8">
+                <img
+                  src="static/shield-icon.png"
+                  alt="Privacy Shield"
+                  class="mb-3"
+                  width="60"
+                />
+                <h2>Your privacy is our responsibility</h2>
+                <p class="lead">
+                  We believe that trust is paramount in a relationship. We do
+                  not own or sell your data, and we most certainly do not bank
+                  on advertising-based business models. The only way we make
+                  money is from the software license fees you pay us.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <div class="container-fluid homepage-section2 p-5">
+          <div class="row align-items-center">
+            <!-- Image Section -->
+            <div class="col-md-4 text-center">
+              <img
+                src="static/features.png"
+                alt="Features"
+                class="img-fluid rounded"
+              />
+            </div>
+            <!-- Text Section -->
+            <div class="col-md-8">
+              <h2 class="mb-3">Simple to learn, easier to use</h2>
+              <p style="text-align: justify">
+                Getting started with FINTRACK is extremely simple. You can set
+                up the application in less than a minute and get started with
+                invoicing even faster. It just works the way you expect it to.
+                And with the consistency and intuitiveness in design, you will
+                be able to discover more and learn easily, as you are using
+                FINTRACK.
+              </p>
+              <br />
+              <h2 class="mb-3">
+                Insightful, actionable and customizable reports
+              </h2>
+              <p style="text-align: justify">
+                FINTRACK comes with a diverse set of readily available business
+                reports with powerful and actionable insights, helping you make
+                informed decisions for your business growth. Be it business
+                relationships, cash or inventory, these reports will help you
+                manage all these aspects better with extremely easy discovery
+                and navigation
+              </p>
+            </div>
           </div>
         </div>
+
+        <section id="about" class="m-3">
+          <div class="container">
+            <h1 class="text-center mt-5">About FINTRAK</h1>
+            <br />
+            <br />
+            <div class="row align-items-center">
+              <div class="col-md-6">
+                <img
+                  src="static/aboutus.png"
+                  alt="About Us"
+                  class="img-fluid rounded shadow"
+                />
+              </div>
+              <div class="col-md-6">
+                <p class="mt-3">
+                  FINTRAK is an accounting-based platform designed to help small
+                  businesses streamline their financial management. Our goal is
+                  to provide an easy-to-use yet powerful solution for handling
+                  invoices, inventory, taxes, and more.
+                </p>
+
+                <h3>Core Values</h3>
+                <ul>
+                  <li>Transparency</li>
+                  <li>Innovation</li>
+                  <li>Customer-Centric Approach</li>
+                  <li>Reliability</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="row mt-5">
+              <div class="col-12 text-center">
+                <h2>FAQs</h2>
+              </div>
+              <div class="col-12">
+                <div class="accordion" id="faqAccordion">
+                  <div class="accordion-item">
+                    <h2 class="accordion-header" id="faqOne">
+                      <button
+                        class="accordion-button collapsed"
+                        type="button"
+                        data-bs-toggle="collapse"
+                        data-bs-target="#collapseOne"
+                        aria-controls="collapseOne"
+                      >
+                        How does FINTRAK help small businesses?
+                      </button>
+                    </h2>
+                    <div
+                      id="collapseOne"
+                      class="accordion-collapse collapse"
+                      aria-labelledby="faqOne"
+                      data-bs-parent="#faqAccordion"
+                    >
+                      <div class="accordion-body">
+                        FINTRAK provides an all-in-one solution for managing
+                        invoices, inventory, taxes, and financial reports
+                        efficiently.
+                      </div>
+                    </div>
+                  </div>
+                  <div class="accordion-item">
+                    <h2 class="accordion-header" id="faqTwo">
+                      <button
+                        class="accordion-button collapsed"
+                        type="button"
+                        data-bs-toggle="collapse"
+                        data-bs-target="#collapseTwo"
+                        aria-expanded="false"
+                        aria-controls="collapseTwo"
+                      >
+                        Is FINTRAK easy to use?
+                      </button>
+                    </h2>
+                    <div
+                      id="collapseTwo"
+                      class="accordion-collapse collapse"
+                      aria-labelledby="faqTwo"
+                      data-bs-parent="#faqAccordion"
+                    >
+                      <div class="accordion-body">
+                        Absolutely! FINTRAK is designed with a user-friendly
+                        interface to make financial management as simple as
+                        possible.
+                      </div>
+                    </div>
+                  </div>
+                  <div class="accordion-item">
+                    <h2 class="accordion-header" id="faqThree">
+                      <button
+                        class="accordion-button collapsed"
+                        type="button"
+                        data-bs-toggle="collapse"
+                        data-bs-target="#collapseThree"
+                        aria-expanded="false"
+                        aria-controls="collapseThree"
+                      >
+                        Can I access FINTRAK from my mobile device?
+                      </button>
+                    </h2>
+                    <div
+                      id="collapseThree"
+                      class="accordion-collapse collapse"
+                      aria-labelledby="faqThree"
+                      data-bs-parent="#faqAccordion"
+                    >
+                      <div class="accordion-body">
+                        Yes! FINTRAK is fully responsive and works seamlessly on
+                        desktops, tablets, and mobile devices.
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="contact" class="m-3">
+          <div>
+            <h1>Section 4</h1>
+            <p>This is the final section. Thanks for visiting!</p>
+          </div>
+        </section>
       </div>
-
-      <section id="about" class="m-3">
-        <div>
-          <h1>About Us</h1>
-          <p>
-            Welcome to Section 2. Scroll further to discover more.loremorem
-            Ipsum is simply dummy text of the printing and typesetting industry.
-            Lorem Ipsum has been the industry's standard dummy text ever since
-            the 1500s, when an unknown printer took a galley of type and
-            scrambled it to make a type specimen book. It has survived not only
-            five centuries, but also the leap into electronic typesetting,
-            remaining essentially unchanged. It was popularised in the 1960s
-            with the release of Letraset sheets containing Lorem Ipsum passages,
-            and more recently with desktop publishing software like Aldus
-            PageMaker including versions of Lorem Ipsum. Why do we use it? It is
-            a long established fact that a reader will be distracted by the
-            readable content of a page when looking at its layout. The point of
-            using Lorem Ipsum is that it has a more-or-less normal distribution
-            of letters, as opposed to using 'Content here, content here', making
-            it look like readable English. Many desktop publishing packages and
-            web page editors now use Lorem Ipsum as their default model text,
-            and a search for 'lorem ipsum' will uncover many web sites still in
-            their infancy. Various versions have evolved over the years,
-            sometimes by accident, sometimes on purpose (injected humour and the
-            like).
-          </p>
-        </div>
-      </section>
-
-      <section id="contact" class="m-3">
-        <div>
-          <h1>Section 4</h1>
-          <p>This is the final section. Thanks for visiting!</p>
-        </div>
-      </section>
-
       <!-- Footer -->
       <footer class="">
         <div class="container">

@@ -18,6 +18,7 @@
         padding: 20px;
         border: 1px solid #ccc;
         border-radius: 10px;
+        background-color: white;
       }
       .form-group {
         margin-bottom: 20px;
@@ -33,6 +34,7 @@
         top: 0;
         left: 0;
         overflow-y: auto;
+        box-shadow: 0 5px 10px rgba(0, 0, 0, 0.8);
       }
 
       .sidebar .nav-link {
@@ -42,16 +44,18 @@
       }
 
       .sidebar .nav-link.active {
-        background-color: #bbdefb;
+        background-color: #ffffff;
         color: #0056b3;
         font-weight: bold;
       }
 
       .main-content {
         flex-grow: 1;
-        padding: 1.5rem;
+        padding-left: 1.5rem;
         background-color: #f9f9f9;
         margin-left: 250px;
+        margin-top: 0px;
+        margin-bottom: 0px;
       }
 
       h3 {
@@ -63,10 +67,6 @@
         background-color: #f5f5f5;
         margin: 0;
         padding: 0;
-      }
-
-      .dashboard-container {
-        padding: 2rem;
       }
 
       .dashboard-card {
@@ -92,6 +92,16 @@
         font-size: 2rem;
         font-weight: bold;
         color: #007bff;
+      }
+
+      .dashboard-container {
+        background-image: url("static\\dashboard.jpg");
+        background-position: center;
+        background-size: cover;
+        background-repeat: repeat;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
       }
 
       .tax-columns {
@@ -146,9 +156,28 @@
       #itemTable .table-bordered {
         border: 1px solid #dee2e6;
       }
+
+      #tab5 {
+        margin-top: 20px;
+      }
+      .tab-pane {
+        border-top-left-radius: 50px;
+        border-bottom-left-radius: 50px;
+
+        background: url("../../static/5.png") no-repeat center center/cover;
+        min-height: 100vh;
+        padding: 20px;
+        margin: 0px;
+        color: rgb(0, 0, 0);
+      }
     </style>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+    />
   </head>
   <body onload="onLoadMethod()">
+    {% load static %}
     <div class="d-flex flex-wrap">
       <button
         class="btn btn-primary d-md-none m-3"
@@ -163,7 +192,15 @@
         ☰
       </button>
       <!-- Sidebar -->
-      <nav class="sidebar collapse d-md-block bg-dark" id="sidebarMenu">
+      <nav
+        class="sidebar collapse d-md-block"
+        id="sidebarMenu"
+        style="
+          border-top-right-radius: 50px;
+          border-bottom-right-radius: 50px;
+          background-color: #000b17;
+        "
+      >
         <div class="brand-name text-center">
           <h3 class="mb-5 mt-2 text-light">FINTRACK</h3>
         </div>
@@ -174,100 +211,92 @@
               id="tab1-link"
               data-bs-toggle="tab"
               href="#tab1"
-              >Dashboard</a
             >
+              <i class="fas fa-tachometer-alt"></i> Dashboard
+            </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" id="tab2-link" data-bs-toggle="tab" href="#tab2"
-              >Create Bill</a
+            <a
+              class="nav-link"
+              id="tab2-link"
+              data-bs-toggle="tab"
+              href="#tab2"
             >
+              <i class="fas fa-file-invoice"></i> Create Bill
+            </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" id="tab3-link" data-bs-toggle="tab" href="#tab3"
-              >Inventory</a
+            <a
+              class="nav-link"
+              id="tab3-link"
+              data-bs-toggle="tab"
+              href="#tab3"
             >
+              <i class="fas fa-box"></i> Inventory
+            </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" id="tab4-link" data-bs-toggle="tab" href="#tab4"
-              >Sales</a
+            <a
+              class="nav-link"
+              id="tab4-link"
+              data-bs-toggle="tab"
+              href="#tab4"
             >
+              <i class="fas fa-chart-line"></i> Sales / Purchases
+            </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" id="tab5-link" data-bs-toggle="tab" href="#tab5"
-              >Purchases</a
+            <a
+              class="nav-link"
+              id="tab5-link"
+              data-bs-toggle="tab"
+              href="#tab5"
             >
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" id="tab6-link" data-bs-toggle="tab" href="#tab6"
-              >Company Details</a
-            >
+              <i class="fas fa-building"></i> Company Details
+            </a>
           </li>
           <li class="nav-item btn-logout">
-            <a class="nav-link" href="{% url 'home' %}">Log Out</a>
+            <a class="nav-link" href="{% url 'home' %}">
+              <i class="fas fa-sign-out-alt"></i> Log Out
+            </a>
           </li>
         </ul>
       </nav>
 
       <div class="main-content tab-content">
         <div class="tab-pane fade show active" id="tab1">
-          <div class="container dashboard-container">
-            <div class="row g-4">
-              <div class="col-12 col-md-4">
-                <div class="dashboard-card">
-                  <div class="dashboard-title">Turnover</div>
-                  <div class="dashboard-value">$1,234,567</div>
+          <section id="dashboard" class="m-3">
+            <div class="container-fluid dashboard-container">
+              <div class="row">
+                <div class="col-12 col-md-8">
+                  <h6>Company :</h6>
+                  <h1>{{company_name}}</h1>
+                  <br />
+                  GST No: {{gst_no}}<br />
+                  Phone No: {{phone_no}}<br />
+                  {{company_address}}
                 </div>
-              </div>
-
-              <div class="col-12 col-md-4">
-                <div class="dashboard-card">
-                  <div class="dashboard-title">Total Receivables</div>
-                  <div class="dashboard-value">$890,123</div>
-                </div>
-              </div>
-
-              <div class="col-12 col-md-4">
-                <div class="dashboard-card">
-                  <div class="dashboard-title">Total Payables</div>
-                  <div class="dashboard-value">$456,789</div>
-                </div>
-              </div>
-
-              <div class="col-12 col-md-6">
-                <div class="dashboard-card">
-                  <div class="dashboard-title">Stock Inventory</div>
-                  <div class="dashboard-value">3,452 Units</div>
-                </div>
-              </div>
-
-              <div class="col-12 col-md-6">
-                <div class="dashboard-card">
-                  <div class="dashboard-title">Net Profit</div>
-                  <div class="dashboard-value">$123,456</div>
-                </div>
-              </div>
-
-              <div class="col-12">
-                <div class="dashboard-card">
-                  <div class="dashboard-title">Tax Input</div>
-                  <div class="tax-columns">
-                    <div class="tax-column">
-                      <div>IGST</div>
-                      <div class="dashboard-value">{{tax_input}}</div>
-                    </div>
-                    <div class="tax-column">
-                      <div>CGST</div>
-                      <div class="dashboard-value">$6,789</div>
-                    </div>
-                    <div class="tax-column">
-                      <div>SGST</div>
-                      <div class="dashboard-value">$5,432</div>
-                    </div>
+                <div class="col-12 col-md-4">
+                  <div class="dashboard-card">
+                    <div class="dashboard-title">Inventory</div>
+                    <div class="dashboard-value">$456,789</div>
+                    <small class="text-muted">Highest Quantity Stocks:</small>
+                    <ul class="small-text">
+                      <li>Product A - 1,200 units</li>
+                      <li>Product B - 950 units</li>
+                      <li>Product C - 750 units</li>
+                    </ul>
+                    <button class="btn btn-primary mt-2">Open Inventory</button>
                   </div>
                 </div>
               </div>
+              <div class="row">
+                <div class="col-12 col-md-4">
+                  
+                </div>
+              </div>
             </div>
-          </div>
+          </section>
         </div>
 
         <div class="tab-pane fade" id="tab2">
@@ -276,28 +305,6 @@
 
             <form method="post" action="{% url 'invoiceGenerate' %}">
               {% csrf_token %}
-              <div class="row g-3">
-                <div class="col-12 col-md-6">
-                  <label for="consignee" class="form-label"
-                    >Consignee (Ship to)</label
-                  >
-                  <select class="form-select" id="consignee" name="consignee">
-                    <option selected disabled>Select Consignee</option>
-                    <option value="Consignee 1">Consignee 1</option>
-                    <option value="Consignee 2">Consignee 2</option>
-                  </select>
-                </div>
-
-                <div class="col-12 col-md-6">
-                  <label for="buyer" class="form-label">Buyer (Bill to)</label>
-                  <select class="form-select" id="buyer" name="buyer">
-                    <option selected disabled>Select Buyer</option>
-                    <option value="Buyer 1">Buyer 1</option>
-                    <option value="Buyer 2">Buyer 2</option>
-                  </select>
-                </div>
-              </div>
-
               <div class="row g-3 mt-3">
                 <div class="col-12 col-md-6">
                   <label for="invoiceNo" class="form-label">Invoice No</label>
@@ -307,6 +314,8 @@
                     id="invoiceNo"
                     name="invoiceNo"
                     placeholder="Enter Invoice No"
+                    value="{{invoice_no}}"
+                    disabled
                   />
                 </div>
 
@@ -317,93 +326,183 @@
                     class="form-control"
                     id="date"
                     name="date"
+                    required
+                  />
+                </div>
+              </div>
+              <div class="row g-3 mt-3">
+                <div class="col-12 col-md-6">
+                  <label for="billerName" class="form-label">Biller Name</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="billerName"
+                    name="billerName"
+                    placeholder="Enter Biller Name"
+                    required
+                  />
+                </div>
+
+                <div class="col-12 col-md-6">
+                  <label for="billerPhone" class="form-label"
+                    >Biller Phone No</label
+                  >
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="billerPhone"
+                    name="billerPhone"
+                    placeholder="Enter Biller Phone No"
+                    required
                   />
                 </div>
               </div>
 
               <div class="row g-3 mt-3">
                 <div class="col-12 col-md-6">
-                  <label for="deliveryNote" class="form-label"
-                    >Delivery Note</label
+                  <label for="billerAddress" class="form-label"
+                    >Biller Address</label
                   >
                   <input
                     type="text"
                     class="form-control"
-                    id="deliveryNote"
-                    name="deliveryNote"
-                    placeholder="Enter Delivery Note"
+                    id="billerAddress"
+                    name="billerAddress"
+                    placeholder="Enter Biller Address"
+                    required
                   />
                 </div>
-
                 <div class="col-12 col-md-6">
                   <label for="paymentMode" class="form-label"
                     >Mode of Payment</label
                   >
-                  <input
-                    type="text"
-                    class="form-control"
-                    id="paymentMode"
-                    name="paymentMode"
-                    placeholder="Enter Payment Mode"
-                  />
-                </div>
-              </div>
-
-              <div class="row g-3 mt-3">
-                <div class="col-12 col-md-6">
-                  <label for="dispatchDoc" class="form-label"
-                    >Dispatch Doc No</label
-                  >
-                  <input
-                    type="text"
-                    class="form-control"
-                    id="dispatchDoc"
-                    name="dispatchDoc"
-                    placeholder="Enter Dispatch Doc No"
-                  />
-                </div>
-
-                <div class="col-12 col-md-6">
-                  <label for="deliveryNoteDate" class="form-label"
-                    >Delivery Note Date</label
-                  >
-                  <input
-                    type="date"
-                    class="form-control"
-                    id="deliveryNoteDate"
-                    name="deliveryNoteDate"
-                  />
-                </div>
-              </div>
-
-              <div class="row g-3 mt-3">
-                <div class="col-12 col-md-6">
-                  <label for="dispatchedThrough" class="form-label"
-                    >Dispatched Through</label
-                  >
                   <select
                     class="form-select"
-                    id="dispatchedThrough"
-                    name="dispatchedThrough"
+                    id="paymentMode"
+                    name="paymentMode"
                   >
-                    <option selected disabled>Select Dispatch Mode</option>
-                    <option value="Courier">Courier</option>
-                    <option value="Truck">Truck</option>
-                    <option value="Ship">Ship</option>
+                    <option selected disabled>Select Payment Mode</option>
+                    <option value="UPI">UPI</option>
+                    <option value="Cash">Cash</option>
+                    <option value="Bank Transfer">Bank Transfer</option>
+                    <option value="Check">Check</option>
                   </select>
                 </div>
+              </div>
 
-                <div class="col-12 col-md-6">
-                  <label for="destination" class="form-label"
-                    >Destination</label
-                  >
-                  <input
-                    type="text"
-                    class="form-control"
-                    id="destination"
-                    name="destination"
-                    placeholder="Enter Destination"
-                  />
+              <div class="d-flex justify-content-center mt-4">
+                <button
+                  type="button"
+                  class="btn btn-secondary"
+                  id="showMoreFields"
+                >
+                  Show More Fields
+                </button>
+              </div>
+              <input type="hidden" name="binvoice" id="binvoice" />
+              <div id="extraFields" class="hidden-fields mt-4 d-none">
+                <div class="row g-3 mt-3">
+                  <div class="col-12 col-md-6">
+                    <label for="billerGst" class="form-label"
+                      >Biller GST No</label
+                    >
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="billerGst"
+                      name="billerGst"
+                      placeholder="Enter Biller GST No"
+                    />
+                  </div>
+                  <div class="col-12 col-md-6">
+                    <label for="buyerOrderNo" class="form-label"
+                      >Buyer Order No</label
+                    >
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="buyerOrderNo"
+                      name="buyerOrderNo"
+                      placeholder="Enter Buyer Order No"
+                    />
+                  </div>
+                </div>
+
+                <div class="row g-3 mt-3">
+                  <div class="col-12 col-md-6">
+                    <label for="eWayBillNumber" class="form-label"
+                      >E Way Bill Number</label
+                    >
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="eWayBillNumber"
+                      name="eWayBillNumber"
+                      placeholder="Enter E Way Bill Number"
+                    />
+                  </div>
+
+                  <div class="col-12 col-md-6">
+                    <label for="eWayBillDate" class="form-label"
+                      >E Way Bill Date</label
+                    >
+                    <input
+                      type="date"
+                      class="form-control"
+                      id="eWayBillDate"
+                      name="eWayBillDate"
+                    />
+                  </div>
+                </div>
+
+                <div class="row g-3 mt-3">
+                  <div class="col-12 col-md-6">
+                    <label for="billOfLading" class="form-label"
+                      >Bill of Lading/LR-RR No.</label
+                    >
+                    <input
+                      class="form-control"
+                      id="billOfLading"
+                      name="billOfLading"
+                      placeholder="Enter Bill of Lading/LR-RR No."
+                    />
+                  </div>
+
+                  <div class="col-12 col-md-6">
+                    <label for="motorVechileNumber" class="form-label"
+                      >Motor Vehicle Number</label
+                    >
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="motorVechileNumber"
+                      name="motorVechileNumber"
+                      placeholder="Enter Motor Vehicle Number"
+                    />
+                  </div>
+                </div>
+
+                <div class="row g-3 mt-3">
+                  <div class="col-12 col-md-6">
+                    <label for="refNo" class="form-label">Ref Number</label>
+                    <input
+                      class="form-control"
+                      id="refNo"
+                      name="refNo"
+                      placeholder="Enter Ref Number"
+                    />
+                  </div>
+
+                  <div class="col-12 col-md-6">
+                    <label for="otherRef" class="form-label">Other Ref.</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="otherRef"
+                      name="otherRef"
+                      placeholder="Enter Other Ref."
+                    />
+                  </div>
                 </div>
               </div>
 
@@ -565,6 +664,7 @@
                     placeholder="Purchase Price"
                   />
                 </div>
+                <input type="hidden" id="addItemHidden" name="addItemHidden" />
                 <div class="col-md-2 d-flex align-items-center">
                   <button class="btn btn-success w-100" onclick="addItem()">
                     Add
@@ -612,7 +712,7 @@
           </div>
         </div>
 
-        <div class="tab-pane" id="tab6">
+        <div class="tab-pane justify-content-center text-center" id="tab5">
           <form
             method="post"
             action="{% url 'companyDetails' %}"
@@ -620,8 +720,10 @@
           >
             {% csrf_token %}
 
-            <div class="form-group">
-              <label for="email">Email:</label>
+            <h1>Your Company Details</h1>
+            <br />
+            <div class="form-group text-start">
+              <label for="email" class="">Email:</label>
               <input
                 type="email"
                 class="form-control"
@@ -632,7 +734,7 @@
               />
             </div>
 
-            <div class="form-group">
+            <div class="form-group text-start">
               <label for="company_name">Company Name:</label>
               <input
                 type="text"
@@ -644,7 +746,7 @@
               />
             </div>
 
-            <div class="form-group">
+            <div class="form-group text-start">
               <label for="company_address">Company Address:</label>
               <textarea
                 class="form-control"
@@ -657,7 +759,7 @@
               >
             </div>
 
-            <div class="form-group">
+            <div class="form-group text-start">
               <label for="gst_no">GST Number:</label>
               <input
                 type="text"
@@ -669,7 +771,7 @@
               />
             </div>
 
-            <div class="form-group">
+            <div class="form-group text-start">
               <label for="phone_no">Phone Number:</label>
               <input
                 type="text"
@@ -686,7 +788,7 @@
               class="btn btn-primary btn-block"
               value="companyupdate"
             >
-              Submit
+              Update Details
             </button>
           </form>
         </div>
@@ -698,7 +800,6 @@
         id="editItemModal"
         tabindex="-1"
         aria-labelledby="editItemModalLabel"
-        aria-hidden="true"
       >
         <div class="modal-dialog">
           <div class="modal-content">
@@ -760,7 +861,6 @@
         id="taxModal"
         tabindex="-1"
         aria-labelledby="taxModalLabel"
-        aria-hidden="true"
       >
         <div class="modal-dialog">
           <div class="modal-content">
@@ -880,12 +980,12 @@
 
               const newRow = document.createElement("tr");
               newRow.innerHTML = `
-                        <td>${selectedItemId}</td>
-                        <td>${selectedItem}</td>
-                        <td>${selectedQuantity}</td>
-                        <td>${selectedPrice.toFixed(2)}</td>
-                        <td>${totalPrice.toFixed(2)}</td>
-                    `;
+                          <td>${selectedItemId}</td>
+                          <td>${selectedItem}</td>
+                          <td>${selectedQuantity}</td>
+                          <td>${selectedPrice.toFixed(2)}</td>
+                          <td>${totalPrice.toFixed(2)}</td>
+                      `;
               document.getElementById("itemTableBody").appendChild(newRow);
               updateHiddenInput();
               dropdown.remove(dropdown.selectedIndex);
@@ -936,6 +1036,7 @@
 
       function onLoadMethod() {
         inputField = document.getElementById("company_name");
+        console.log(inputField);
         if (inputField.value.trim() == "") {
           document.getElementById("tab1-link").classList.remove("active");
           document.getElementById("tab1").classList.remove("active");
@@ -947,7 +1048,34 @@
           document.getElementById("tab4-link").classList.add("d-none");
           document.getElementById("tab5-link").classList.add("d-none");
         }
+
+        updateNewId();
+        updateDate();
       }
+
+      function updateDate() {
+        var today = new Date();
+        var yyyy = today.getFullYear();
+        var mm = today.getMonth() + 1;
+        var dd = today.getDate();
+        if (mm < 10) {
+          mm = "0" + mm;
+        }
+        if (dd < 10) {
+          dd = "0" + dd;
+        }
+        var formattedDate = yyyy + "-" + mm + "-" + dd;
+        document.getElementById("date").value = formattedDate;
+      }
+
+      function updateNewId() {
+        let table = document.getElementById("inventoryTable");
+        let lastRow = table.querySelectorAll("tr")[table.rows.length - 1]; // Get last <tr>
+        let specificTd = lastRow.cells[0]; // Change index to target specific <td>
+        document.getElementById("itemId").value =
+          parseInt(specificTd.innerText) + 1;
+      }
+
       function updateHiddenInput() {
         const items = [];
         document.querySelectorAll("#itemTable tbody tr").forEach((row) => {
@@ -986,24 +1114,47 @@
 
         let newRow = tbody.insertRow();
         newRow.innerHTML = `
-      <td>${itemId}</td>
-      <td>${itemName}</td>
-      <td>${itemQuantity}</td>
-      <td>${purchasePrice}</td>
-      <td>
-        <button class="btn btn-success btn-sm" onclick="openEditModal(this)">Edit</button>
-        <button class="btn btn-danger btn-sm" onclick="deleteItem(this)">Delete</button>
-      </td>
-    `;
+        <td>${itemId}</td>
+        <td>${itemName}</td>
+        <td>${itemQuantity}</td>
+        <td>${purchasePrice}</td>
+        <td>
+          <button class="btn btn-success btn-sm" onclick="openEditModal(this)">Edit</button>
+          <button class="btn btn-danger btn-sm" onclick="deleteItem(this)">Delete</button>
+        </td>
+      `;
+        x = `["${itemId}","${itemName}","${itemQuantity}","${purchasePrice}"]`;
 
         // Clear input fields
         document.getElementById("itemId").value = "";
         document.getElementById("itemName").value = "";
         document.getElementById("itemQuantity").value = "";
         document.getElementById("purchasePrice").value = "";
+
+        const dropdown = document.getElementById("itemsDropdown");
+        optionValue = `${itemId}. ${itemName}. (AQ: ${itemQuantity})`;
+        let option = new Option(optionValue);
+        dropdown.add(option);
+        updateNewId();
+        handleAction("addInventory", x);
       };
 
       window.deleteItem = function (button) {
+        const row = button.closest("tr");
+        const tds = row.querySelectorAll("td");
+        const id = tds[0].innerText;
+
+        let select = document.getElementById("itemsDropdown");
+
+        for (let i = 0; i < select.options.length; i++) {
+          if (select.options[i].value.split(". ")[0] === id) {
+            select.remove(i);
+            break;
+          }
+        }
+
+        updateNewId();
+        handleAction("deleteInventory", id);
         button.closest("tr").remove();
       };
 
@@ -1037,11 +1188,11 @@
           document.getElementById("editItemModal")
         );
         modal.hide();
-        tableJson();
-        handleAction("updateInventory");
+        x = tableJson();
+        handleAction("updateInventory", x);
       }
 
-      function handleAction(action) {
+      function handleAction(action, data) {
         fetch("/dashboard/handle-action/", {
           method: "POST",
           headers: {
@@ -1050,7 +1201,7 @@
               .getAttribute("content"),
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ action: action }),
+          body: JSON.stringify({ action: action, data: data }),
         })
           .then((response) => response.json())
           .then((data) => alert(data.message))
@@ -1061,12 +1212,36 @@
         tableData = "[";
         let table = document.getElementById("inventoryTable");
         for (let row of table.rows) {
-          tableData += `${row.cells[0].innerText}|${row.cells[1].innerText}|${row.cells[2].innerText}|${row.cells[3].innerText},`;
+          tableData += `"${row.cells[0].innerText}|${row.cells[1].innerText}|${row.cells[2].innerText}|${row.cells[3].innerText}",`;
         }
         document.getElementById("table_data").value = tableData + "]";
         console.log(document.getElementById("table_data").value);
         return document.getElementById("table_data").value;
       }
+      document
+        .querySelector("form")
+        .addEventListener("submit", function (event) {
+          // Get the table body where the rows are added
+          var itemTableBody = document.getElementById("itemTableBody");
+
+          // Check if there are any rows in the table body
+          if (itemTableBody.rows.length === 0) {
+            // Prevent form submission
+            event.preventDefault();
+            alert(
+              "Please add at least one item to the bill before submitting."
+            );
+          }
+        });
+
+      document
+        .getElementById("showMoreFields")
+        .addEventListener("click", function () {
+          document.getElementById("extraFields").classList.remove("d-none");
+          document.getElementById("extraFields").classList.add("d-block");
+          this.style.display = "none";
+          document.getElementById("binvoice").value = "yes";
+        });
     </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   </body>

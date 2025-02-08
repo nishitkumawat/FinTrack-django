@@ -13,6 +13,5 @@ class Company:
         self.password = password
         self.total_profit = self.total_sales- self.total_purchases
         self.turnover = self.total_sales
-
     def __str__(self):
         return f"Company ID : {self.company_id},Company Name : {self.company_name},Username : {self.username},Email : {self.email},Phone No : {self.phone_no},GST No : {self.gst_no},Company Address  : {self.company_address},Password : {self.password}"
