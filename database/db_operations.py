@@ -306,8 +306,17 @@ def calculateInventory(id):
         r += float(i[3])*float(i[4])
     return r
     
-    
-        
+def sellTable(id):
+    global database,cursor
+    cursor.execute("SELECT * FROM sell WHERE company_id = %s", (id,))
+    result = cursor.fetchall()
+    r = []
+    for i in result:
+        x = [i[1],i[3],i[4],i[5],i[6],i[7],i[8],i[9],i[10]]
+        r.append(x)
+    return r
+
+
 # if _name__ == "__main__":
 # d = Database()
 # d.create_connection()

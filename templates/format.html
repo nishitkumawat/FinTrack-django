@@ -17,32 +17,11 @@
       crossorigin="anonymous"
     ></script>
     {% block style%}{% endblock %}
-
-    <script>
-      function displayDate() {
-        document.getElementById("currentDate").textContent +=
-          new Date().toLocaleDateString();
-
-        const currentDate = new Date();
-        const currentYear = currentDate.getFullYear();
-        let startOfYear = new Date(currentYear, 3, 1);
-        let endOfYear = new Date(currentYear + 1, 2, 31);
-
-        if (currentDate < startOfYear) {
-          startOfYear = new Date(currentYear - 1, 3, 1);
-          endOfYear = new Date(currentYear, 2, 31);
-        }
-
-        document.getElementById(
-          "currentPeriod"
-        ).textContent += `${startOfYear.getFullYear()} - ${endOfYear.getFullYear()}`;
-      }
-    </script>
   </head>
 
-  <body onload="displayDate()">
+  <body>
     <div class="container-fluid">
-      <nav
+      <!-- <nav
         id="navbar-example"
         class="navbar navbar-expand-lg navbar-light bg-light fixed-top"
       >
@@ -69,7 +48,7 @@
             </ul>
           </div>
         </div>
-      </nav>
+      </nav> -->
       {% block content %}{% endblock %}
     </div>
   </body>

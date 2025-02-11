@@ -28,12 +28,13 @@
         min-width: 250px;
         max-width: 250px;
         min-height: 100vh;
-        background-color: #e3f2fd;
+        background-color: #083b77;
         padding-top: 1rem;
         position: fixed;
         top: 0;
         left: 0;
         overflow-y: auto;
+
         box-shadow: 0 5px 10px rgba(0, 0, 0, 0.8);
       }
 
@@ -45,7 +46,7 @@
 
       .sidebar .nav-link.active {
         background-color: #ffffff;
-        color: #0056b3;
+        color: #083b77;
         font-weight: bold;
       }
 
@@ -170,6 +171,26 @@
         margin: 0px;
         color: rgb(0, 0, 0);
       }
+
+      #tab1 {
+        background: #f9f9f9;
+      }
+
+      .iframe-container {
+        width: 100%;
+        height: 200vh; /* Or any specific height */
+        position: relative;
+      }
+      .iframe-container iframe {
+        width: 100%;
+        height: 100%;
+        border: none;
+        position: absolute;
+        top: 0;
+        left: 0;
+        overflow: hidden; /* This does not work for iframe, but good practice */
+        scrollbar-width: none; /* For Firefox */
+      }
     </style>
     <link
       rel="stylesheet"
@@ -265,8 +286,8 @@
 
       <div class="main-content tab-content">
         <div class="tab-pane fade show active" id="tab1">
-          <section id="dashboard" class="m-3">
-            <div class="container-fluid dashboard-container">
+          <section id="dashboard" class="m-3 iframe-container">
+            <!-- <div class="container-fluid dashboard-container">
               <div class="row">
                 <div class="col-12 col-md-8">
                   <h6>Company :</h6>
@@ -291,11 +312,10 @@
                 </div>
               </div>
               <div class="row">
-                <div class="col-12 col-md-4">
-                  
-                </div>
+                <div class="col-12 col-md-4"></div>
               </div>
-            </div>
+            </div> -->
+            <!-- <iframe src="{% url 'mainPage' %}" scrolling="no"></iframe> -->
           </section>
         </div>
 
@@ -712,6 +732,36 @@
           </div>
         </div>
 
+        <div class="tab-pane fade" id="tab4">
+          <div class="container mt-5">
+            <h2 class="text-center mb-4">Sells</h2>
+            <table class="table table-bordered table-striped text-center">
+              <thead class="table-dark">
+                <tr>
+                  <th>Invoice No.</th>
+                  <th>Item Name</th>
+                  <th>Quantity</th>
+                  <th>Total Price</th>
+                  <th>Date</th>
+                  <th>Buyer Details</th>
+                </tr>
+              </thead>
+              <tbody id="sellTable">
+                {% for d in sellTable %}
+                <tr>
+                  <td>{{d.0}}</td>
+                  <td>{{d.5}}</td>
+                  <td>{{d.7}}</td>
+                  <td>{{d.8}}</td>
+                  <td>{{d.4}}</td>
+                  <td>{{d.1}} <br />{{d.2}}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
         <div class="tab-pane justify-content-center text-center" id="tab5">
           <form
             method="post"
@@ -1040,17 +1090,16 @@
         if (inputField.value.trim() == "") {
           document.getElementById("tab1-link").classList.remove("active");
           document.getElementById("tab1").classList.remove("active");
-          document.getElementById("tab6-link").classList.add("active");
-          document.getElementById("tab6").classList.add("active");
+          document.getElementById("tab5-link").classList.add("active");
+          document.getElementById("tab5").classList.add("active");
           document.getElementById("tab1-link").classList.add("d-none");
           document.getElementById("tab2-link").classList.add("d-none");
           document.getElementById("tab3-link").classList.add("d-none");
           document.getElementById("tab4-link").classList.add("d-none");
-          document.getElementById("tab5-link").classList.add("d-none");
+        } else {
+          updateNewId();
+          updateDate();
         }
-
-        updateNewId();
-        updateDate();
       }
 
       function updateDate() {
@@ -1071,9 +1120,11 @@
       function updateNewId() {
         let table = document.getElementById("inventoryTable");
         let lastRow = table.querySelectorAll("tr")[table.rows.length - 1]; // Get last <tr>
-        let specificTd = lastRow.cells[0]; // Change index to target specific <td>
-        document.getElementById("itemId").value =
-          parseInt(specificTd.innerText) + 1;
+        if (lastRow) {
+          let specificTd = lastRow.cells[0]; // Change index to target specific <td>
+          document.getElementById("itemId").value =
+            parseInt(specificTd.innerText) + 1;
+        }
       }
 
       function updateHiddenInput() {

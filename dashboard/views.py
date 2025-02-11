@@ -1,6 +1,6 @@
 import json
 from django.http import HttpResponse, JsonResponse
-from django.shortcuts import redirect, render
+from django.shortcuts import  render
 from userlogin import views as userLogin_views
 from database import db_operations as db
 from django.views.decorators.csrf import csrf_exempt
@@ -27,7 +27,7 @@ def dashboard(request):
         'phone_no': currentUser.phone_no,
         'inventory':inventory,
         'invoice_no' : db.newInvoiceNo(currentUser.company_id),
-        
+        'sellTable' : db.sellTable(currentUser.company_id),
     }
     
     currentUser.turnover = db.calculateTurnOver(currentUser.company_id)
@@ -35,6 +35,12 @@ def dashboard(request):
     inv = db.calculateInventory(currentUser.company_id)
     print(inv)
     return render(request,"dashboard.html",dashboardDict )
+
+def mainPage(request):
+    mainPageDict = {
+        
+    }
+    return render(request,"mainPage.html",mainPageDict)
 
 def invoiceGenerate(request):
     global currentUser,d
@@ -212,7 +218,11 @@ def companyDetails(request):
             currentUser.gst_no = gst_no
             
             d = {'username':currentUser.username,'email':email,'company_name':company_name,'company_address':company_address,'phone_no':phone_no,'gst_no':gst_no}
-            
+            print(dashboardDict)
+            dashboardDict['company_name'] = company_name
+            dashboardDict['company_address'] = company_address
+            dashboardDict['gst_no'] = gst_no
+            dashboardDict['phone_no'] = phone_no
             db.updateCompanyDetails(d)
             return render(request,"dashboard.html",dashboardDict)    
     return render(request,"companyDetails.html")

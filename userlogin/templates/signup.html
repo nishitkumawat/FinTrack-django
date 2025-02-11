@@ -17,7 +17,7 @@
         justify-content: center;
         height: 100vh;
         margin: 0;
-        background-image: url("signupbg.jpg");
+        background-image: url("../../static/bg3.jpg");
         background-size: cover;
         background-position: center;
       }
@@ -32,7 +32,8 @@
         border-radius: 15px;
         padding: 2rem;
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        max-width: 400px;
+        max-width: 500px;
+        min-width: 450px;
         color: #fff;
       }
     </style>
@@ -40,7 +41,7 @@
   <body>
     <div class="card">
       <div class="text-center">
-        <img src="lg2.png" alt="Logo" width="150px" />
+        <img src="../../static/logo.png" class="" width="70px" alt="" />
       </div>
       <h4 class="text-center my-3">Sign Up</h4>
       <form action="{% url 'signup' %}" method="post">

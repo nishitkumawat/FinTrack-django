@@ -17,7 +17,6 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from dashboard import views
-from .views import save_pdf
 
 
 urlpatterns = [
@@ -25,5 +24,6 @@ urlpatterns = [
     path('invoicegenerate/',views.invoiceGenerate,name='invoiceGenerate'),
     path('companyDetails/',views.companyDetails,name='companyDetails'),
     path('handle-action/', views.handle_action, name='handle-action'),
-    path("save-pdf/", save_pdf, name="save_pdf"),
+    path("save-pdf/", views.save_pdf, name="save_pdf"),
+    path("mainPage/", views.mainPage, name="mainPage"),
 ]
