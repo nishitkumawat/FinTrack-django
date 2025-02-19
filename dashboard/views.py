@@ -8,16 +8,20 @@ import os
 from django.template.loader import render_to_string
 import weasyprint
 from num2words import num2words
+from datetime import date,timedelta,datetime
+from collections import defaultdict
+
 
 currentUser = None
 d = None
-dashboardDict = None
+dashboardDict = dict()
 
 # Create your views here.
 def dashboard(request):
     global currentUser,dashboardDict
     db.create_connection()
     companyLogin()
+    portfolio()
     inventory = db.inventory(currentUser.company_id)
     dashboardDict = {
         'email':currentUser.email,
@@ -36,10 +40,51 @@ def dashboard(request):
     print(inv)
     return render(request,"dashboard.html",dashboardDict )
 
-def mainPage(request):
-    mainPageDict = {
+def portfolio():
+    global dashboardDict
+    turnover = db.calculateTurnOver(currentUser.company_id) 
+    inventory = db.calculateInventory(currentUser.company_id)
+    profit = turnover - db.totalPurchase(currentUser.company_id)
+    data = db.sells(currentUser.company_id)
+    
+    today = datetime.today().date()
+    one_year_ago = today - timedelta(days=365)
+
+    month_names = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", 
+                "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+
+    months = []
+    year, month = one_year_ago.year, one_year_ago.month
+    for _ in range(11):  # Only 11 months, so we add the present month separately
+        label = f"{month_names[month-1]}-{year}"
+        months.append(label)
+        month += 1
+        if month > 12:
+            month = 1
+            year += 1
+
+    present_month_label = f"{month_names[today.month-1]}-{today.year}"
+    months.append(present_month_label)
+
+    monthly_totals = {label: 0 for label in months}
+
+    for date_str, amount in data.items():
+        date_obj = datetime.strptime(date_str, "%Y-%m-%d").date()
         
-    }
+        if one_year_ago <= date_obj <= today:
+            label = f"{month_names[date_obj.month-1]}-{date_obj.year}"
+            if label in monthly_totals:
+                monthly_totals[label] += amount
+
+    print(monthly_totals)
+    
+    dashboardDict['sales_graph'] = monthly_totals
+    dashboardDict['turnover'] = turnover
+    dashboardDict['inventory'] = inventory
+    dashboardDict['profit'] = profit
+
+def mainPage(request):
+    mainPageDict = {}
     return render(request,"mainPage.html",mainPageDict)
 
 def invoiceGenerate(request):
@@ -47,83 +92,85 @@ def invoiceGenerate(request):
     if request.method == "POST":
         # form_type = request.POST.get('form_type')
         # if form_type == 'invoice':
+        
+        billerName = request.POST.get("billerName")
+        billerAddress= request.POST.get("billerAddress")
+        billerPhoneNo= request.POST.get("billerPhone")
+        
+        invoiceNo =  db.newInvoiceNo(currentUser.company_id)
+        date = request.POST.get("date")
+        paymentMode = request.POST.get("paymentMode")
+        
+        
+        billerGstNo= request.POST.get("billerGst")
+        buyerOrderNo = request.POST.get("buyerOrderNo")
+        eWayBillNumber = request.POST.get("eWayBillNumber")
+        eWayBillDate = request.POST.get("eWayBillDate")
+        billOfLading = request.POST.get("billOfLading")
+        motorVechileNumber = request.POST.get("motorVechileNumber")
+        refNo = request.POST.get("refNo")
+        otherRef = request.POST.get("otherRef")
+        
+        
+        
+        binvoice = request.POST.get("binvoices")
+        
+        selected_items = request.POST.get("selectedItems")
+        itemsList = eval(f"{selected_items}")
+        
+        tax_input1 = request.POST.get("taxInput")
+        tax_input = eval(f"{tax_input1}")
+        
+        sgst = tax_input[0]
+        cgst = tax_input[1]
+        igst = tax_input[2]
+        totalPrice = 0
+        
+        
+        print("invoice handled")
+        print(selected_items)  
+        print(tax_input)
+        print(sgst,cgst,igst)
+        decQuantity(eval(f'{selected_items}'))
+        
+        for i in itemsList:
+            totalPrice += float(i['totalPrice'])
             
-            billerName = request.POST.get("billerName")
-            billerAddress= request.POST.get("billerAddress")
-            billerPhoneNo= request.POST.get("billerPhone")
+        totalPrice = round(totalPrice,2)
             
-            invoiceNo =  db.newInvoiceNo(currentUser.company_id)
-            date = request.POST.get("date")
-            paymentMode = request.POST.get("paymentMode")
+        tax = [sgst*totalPrice/100,cgst*totalPrice/100,igst*totalPrice/100]
             
-            
-            billerGstNo= request.POST.get("billerGst")
-            buyerOrderNo = request.POST.get("buyerOrderNo")
-            eWayBillNumber = request.POST.get("eWayBillNumber")
-            eWayBillDate = request.POST.get("eWayBillDate")
-            billOfLading = request.POST.get("billOfLading")
-            motorVechileNumber = request.POST.get("motorVechileNumber")
-            refNo = request.POST.get("refNo")
-            otherRef = request.POST.get("otherRef")
-            
-            
-            
-            binvoice = request.POST.get("binvoices")
-            
-            selected_items = request.POST.get("selectedItems")
-            itemsList = eval(f"{selected_items}")
-           
-            tax_input1 = request.POST.get("taxInput")
-            tax_input = eval(f"{tax_input1}")
-            
-            sgst = tax_input[0]
-            cgst = tax_input[1]
-            igst = tax_input[2]
-            totalPrice = 0
-            
-            
-            print("invoice handled")
-            print(selected_items)  
-            print(tax_input)
-            print(sgst,cgst,igst)
-            decQuantity(eval(f'{selected_items}'))
-            
-            for i in itemsList:
-                totalPrice += float(i['totalPrice'])
-                
-            totalPrice = round(totalPrice,2)
-                
-            tax = [sgst*totalPrice/100,cgst*totalPrice/100,igst*totalPrice/100]
-                
-            grandTotal = totalPrice + (totalPrice*sgst/100) + (totalPrice*cgst/100) + (totalPrice*igst/100)
-            grandTotalInWords = num2words(grandTotal)
-            print(grandTotalInWords)
+        grandTotal = totalPrice + (totalPrice*sgst/100) + (totalPrice*cgst/100) + (totalPrice*igst/100)
+        grandTotalInWords = num2words(grandTotal)
+        print(grandTotalInWords)
 
-            d1 = {'email':currentUser.email,'company_name': currentUser.company_name,'company_address': currentUser.company_address,'gst_no': currentUser.gst_no,
-             'phone_no': currentUser.phone_no,'billerName':billerName,'billerAddress':billerAddress,
-             'billerPhoneNo':billerPhoneNo,'invoiceNo':invoiceNo,'date':date,'paymentMode':paymentMode,'grandTotalInWords':grandTotalInWords,'selectedItems':itemsList,'tax':tax,'total':totalPrice,'grandTotal':grandTotal}
-            
-            d2 = {'email':currentUser.email,'company_name': currentUser.company_name,'company_address': currentUser.company_address,'gst_no': currentUser.gst_no,
-             'phone_no': currentUser.phone_no,'billerName':billerName,'billerAddress':billerAddress,
-             'billerPhoneNo':billerPhoneNo,'invoiceNo':invoiceNo,'date':date,'paymentMode':paymentMode,
-             'billerGstNo':billerGstNo,'buyerOrderNo':buyerOrderNo,'eWayBillNumber':eWayBillNumber,'eWayBillDate':eWayBillDate,
-             'billOfLading':billOfLading,'motorVechileNumber':motorVechileNumber,'refNo':refNo,'otherRef':otherRef,'grandTotalInWords':grandTotalInWords,'selectedItems':itemsList}  
+        d1 = {'email':currentUser.email,'company_name': currentUser.company_name,'company_address': currentUser.company_address,'gst_no': currentUser.gst_no,
+            'phone_no': currentUser.phone_no,'billerName':billerName,'billerAddress':billerAddress,
+            'billerPhoneNo':billerPhoneNo,'invoiceNo':invoiceNo,'date':date,'paymentMode':paymentMode,'grandTotalInWords':grandTotalInWords,'selectedItems':itemsList,'tax':tax,'total':totalPrice,'grandTotal':grandTotal}
+        
+        d2 = {'email':currentUser.email,'company_name': currentUser.company_name,'company_address': currentUser.company_address,'gst_no': currentUser.gst_no,
+            'phone_no': currentUser.phone_no,'billerName':billerName,'billerAddress':billerAddress,
+            'billerPhoneNo':billerPhoneNo,'invoiceNo':invoiceNo,'date':date,'paymentMode':paymentMode,
+            'billerGstNo':billerGstNo,'buyerOrderNo':buyerOrderNo,'eWayBillNumber':eWayBillNumber,'eWayBillDate':eWayBillDate,
+            'billOfLading':billOfLading,'motorVechileNumber':motorVechileNumber,'refNo':refNo,'otherRef':otherRef,'grandTotalInWords':grandTotalInWords,'selectedItems':itemsList}  
 
-            salesEntry(currentUser.company_id,invoiceNo,billerName,billerPhoneNo,billerGstNo,date,itemsList)
+        salesEntry(currentUser.company_id,invoiceNo,billerName,billerPhoneNo,billerGstNo,date,itemsList)
 
-            if binvoice == "yes":
-                d = d2
-                db.addInvoiceDetailed(d)
-                return render(request,'invoicegenerate.html',d2)
-            
-            else:
-                d = d1
-                db.addInvoice(d)
-                return render(request,'invoicegenerate.html',d1)
+        if binvoice == "yes":
+            d = d2
+            db.addInvoiceDetailed(d)
+            return render(request,'invoicegenerate.html',d2)
+        
+        else:
+            d = d1
+            db.addInvoice(d)
+            return render(request,'invoicegenerate.html',d1)
 
 def salesEntry(company_id,invoiceNo,billerName,billerPhoneNo,billerGstNo,date,selectedItems):
+    
     for i in selectedItems:
-        db.addToSales(company_id,invoiceNo,billerName,billerPhoneNo,billerGstNo,date,i['name'],i['rate'],i['quantity'],i['totalPrice'])
+        purchase_price = db.getPurchasePrice(currentUser.company_id,i['id'])
+        db.addToSales(company_id,invoiceNo,billerName,billerPhoneNo,billerGstNo,date,i['name'],purchase_price,i['rate'],i['quantity'],i['totalPrice'])
     
 def decQuantity(items):
     dbInventory = db.fetchInventory(currentUser.company_id)

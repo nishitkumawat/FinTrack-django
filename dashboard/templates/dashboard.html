@@ -23,37 +23,71 @@
       .form-group {
         margin-bottom: 20px;
       }
-
       .sidebar {
         min-width: 250px;
         max-width: 250px;
         min-height: 100vh;
-        background-color: #083b77;
+        background-color: #0d1b2a; /* Dark Navy Blue */
         padding-top: 1rem;
         position: fixed;
         top: 0;
         left: 0;
         overflow-y: auto;
-
-        box-shadow: 0 5px 10px rgba(0, 0, 0, 0.8);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2); /* Slightly stronger shadow */
+        border-right: 2px solid #1b263b; /* Darker separator line */
       }
 
+      /* Sidebar Nav Links */
       .sidebar .nav-link {
-        color: #007bff;
-        font-size: 1.1rem;
+        color: #ffffff; /* White text */
+        font-size: 1rem;
         padding: 0.75rem 1.5rem;
+        display: flex;
+        align-items: center;
+        background: transparent;
+        position: relative;
+        transition: all 0.3s ease-in-out;
+        border-radius: 6px;
       }
 
+      /* Icon Spacing */
+      .sidebar .nav-link i {
+        margin-right: 10px;
+      }
+
+      /* Active Link Styling - Only Changes Text Color & Adds Right Border */
       .sidebar .nav-link.active {
-        background-color: #ffffff;
-        color: #083b77;
+        color: #1e90ff !important; /* Bright Blue */
         font-weight: bold;
+      }
+
+      /* Right Border for Active Link */
+      .sidebar .nav-link.active::after {
+        content: "";
+        position: absolute;
+        right: 0;
+        top: 8px;
+        bottom: 8px;
+        width: 3px;
+        background-color: #1e90ff; /* Same as active text color */
+        border-radius: 2px;
+      }
+
+      /* Hover Effect */
+      .sidebar .nav-link:hover {
+        background-color: rgba(
+          30,
+          144,
+          255,
+          0.2
+        ); /* Slightly lighter blue hover */
+        border-radius: 4px;
       }
 
       .main-content {
         flex-grow: 1;
         padding-left: 1.5rem;
-        background-color: #f9f9f9;
+        background-color: #ffffff;
         margin-left: 250px;
         margin-top: 0px;
         margin-bottom: 0px;
@@ -68,41 +102,6 @@
         background-color: #f5f5f5;
         margin: 0;
         padding: 0;
-      }
-
-      .dashboard-card {
-        background-color: #fff;
-        border-radius: 10px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        padding: 1.5rem;
-        text-align: center;
-        transition: transform 0.3s;
-      }
-
-      .dashboard-card:hover {
-        transform: translateY(-5px);
-      }
-
-      .dashboard-title {
-        font-size: 1.5rem;
-        font-weight: 600;
-        margin-bottom: 0.5rem;
-      }
-
-      .dashboard-value {
-        font-size: 2rem;
-        font-weight: bold;
-        color: #007bff;
-      }
-
-      .dashboard-container {
-        background-image: url("static\\dashboard.jpg");
-        background-position: center;
-        background-size: cover;
-        background-repeat: repeat;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
       }
 
       .tax-columns {
@@ -165,31 +164,172 @@
         border-top-left-radius: 50px;
         border-bottom-left-radius: 50px;
 
-        background: url("../../static/5.png") no-repeat center center/cover;
         min-height: 100vh;
         padding: 20px;
         margin: 0px;
         color: rgb(0, 0, 0);
       }
 
-      #tab1 {
-        background: #f9f9f9;
+      .current-date {
+        color: #ffffff;
+        font-size: 1rem;
       }
 
-      .iframe-container {
-        width: 100%;
-        height: 200vh; /* Or any specific height */
-        position: relative;
+      /*extraa*/
+      /* General Form Container */
+      .container {
+        background-color: #ffffff; /* Keep white background */
+        padding: 2rem;
+        border-radius: 10px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
       }
-      .iframe-container iframe {
-        width: 100%;
-        height: 100%;
-        border: none;
-        position: absolute;
+
+      /* Form Labels */
+      .form-label {
+        font-weight: 600;
+        color: #083b77;
+      }
+
+      /* Form Inputs & Select */
+      .form-control,
+      .form-select {
+        border: 1px solid #cccccc;
+        padding: 10px;
+        border-radius: 6px;
+        transition: all 0.3s ease-in-out;
+      }
+
+      .form-control:focus,
+      .form-select:focus {
+        border-color: #004aad;
+        box-shadow: 0 0 8px rgba(0, 74, 173, 0.2);
+      }
+
+      /* Buttons */
+      .btn {
+        font-weight: 600;
+        padding: 10px 20px;
+        transition: all 0.3s ease-in-out;
+      }
+
+      /* Table Styling */
+      .table {
+        background-color: #ffffff;
+        border-radius: 5px;
+        overflow: hidden;
+      }
+
+      .table thead {
+        background-color: #f1f1f1;
+        font-weight: bold;
+      }
+
+      .table th,
+      .table td {
+        border: 1px solid #ddd;
+        padding: 12px;
+      }
+
+      .table tfoot {
+        background-color: #f9f9f9;
+        font-weight: bold;
+      }
+
+      /* Hidden Fields Styling */
+      .hidden-fields {
+        background-color: #f8f9fa;
+        padding: 1.5rem;
+        border-radius: 8px;
+        margin-top: 1rem;
+        border: 1px solid #ddd;
+      }
+
+      .btn,
+      .form-control,
+      .table {
+        transition: all 0.3s ease-in-out;
+      }
+
+      /* Main content should account for sidebar */
+      .main-content {
+        margin-left: 250px; /* Same width as sidebar */
+        padding: 20px;
+      }
+
+      /* Fixed Top Bar */
+      .topbar {
+        position: fixed;
         top: 0;
-        left: 0;
-        overflow: hidden; /* This does not work for iframe, but good practice */
-        scrollbar-width: none; /* For Firefox */
+        left: 250px; /* Aligns with sidebar */
+        width: calc(100% - 250px); /* Remaining width after sidebar */
+        height: 60px;
+        background: #ffffff; /* Dark navbar */
+        color: #1e90ff;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 20px;
+        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+        z-index: 1000;
+        border-bottom: 2px solid black;
+      }
+
+      /* Push the tab content down so it doesn't overlap the top bar */
+      .tab-content {
+        margin-top: 60px; /* Creates space for the fixed top bar */
+      }
+
+      /* Topbar icons styling */
+      .topbar-icons {
+        display: flex;
+        gap: 15px;
+        font-size: 20px;
+      }
+
+      .topbar-icons i {
+        cursor: pointer;
+        transition: 0.3s;
+      }
+
+      .topbar-icons i:hover {
+        color: #000000; /* Highlight effect */
+      }
+
+      /* Responsive: Adjust when sidebar collapses */
+      @media (max-width: 768px) {
+        .topbar {
+          display: none; /* Hides the top bar on small screens */
+        }
+        .main-content {
+          margin-left: 0;
+          padding-top: 0; /* Adjust if needed */
+        }
+      }
+
+      .card {
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease-in-out;
+        border-left: 5px solid #1e90ff;
+      }
+      .card:hover {
+        transform: scale(1.05);
+      }
+      .card h5 {
+        color: #1e90ff;
+      }
+
+      .chart-container {
+        position: relative;
+        width: 100%;
+        max-width: 100%;
+        height: 400px; /* Default height */
+      }
+
+      @media (max-width: 576px) {
+        /* Mobile devices */
+        .chart-container {
+          height: 220px;
+        }
       }
     </style>
     <link
@@ -213,15 +353,7 @@
         ☰
       </button>
       <!-- Sidebar -->
-      <nav
-        class="sidebar collapse d-md-block"
-        id="sidebarMenu"
-        style="
-          border-top-right-radius: 50px;
-          border-bottom-right-radius: 50px;
-          background-color: #000b17;
-        "
-      >
+      <nav class="sidebar collapse d-md-block" id="sidebarMenu">
         <div class="brand-name text-center">
           <h3 class="mb-5 mt-2 text-light">FINTRACK</h3>
         </div>
@@ -285,43 +417,64 @@
       </nav>
 
       <div class="main-content tab-content">
+        <!-- Top Bar -->
+        <div class="topbar" id="topbar">
+          <h4>Welcome, {{company_name}}</h4>
+        </div>
         <div class="tab-pane fade show active" id="tab1">
-          <section id="dashboard" class="m-3 iframe-container">
-            <!-- <div class="container-fluid dashboard-container">
-              <div class="row">
-                <div class="col-12 col-md-8">
-                  <h6>Company :</h6>
-                  <h1>{{company_name}}</h1>
-                  <br />
-                  GST No: {{gst_no}}<br />
-                  Phone No: {{phone_no}}<br />
-                  {{company_address}}
+          <div class="container mt-4">
+            <div class="row">
+              <!-- Inventory Section -->
+              <div class="col-md-4">
+                <div class="card p-3">
+                  <h5>Inventory</h5>
+                  <p><strong>Total Amount:</strong> $50,000</p>
+                  <p><strong>Top 3 Quantities:</strong></p>
+                  <ul>
+                    <li>Product A - 500 units</li>
+                    <li>Product B - 300 units</li>
+                    <li>Product C - 200 units</li>
+                  </ul>
                 </div>
-                <div class="col-12 col-md-4">
-                  <div class="dashboard-card">
-                    <div class="dashboard-title">Inventory</div>
-                    <div class="dashboard-value">$456,789</div>
-                    <small class="text-muted">Highest Quantity Stocks:</small>
-                    <ul class="small-text">
-                      <li>Product A - 1,200 units</li>
-                      <li>Product B - 950 units</li>
-                      <li>Product C - 750 units</li>
-                    </ul>
-                    <button class="btn btn-primary mt-2">Open Inventory</button>
+              </div>
+
+              <!-- Sales Line Graph -->
+              <div class="col-md-8">
+                <div class="card p-3">
+                  <h5>Sales Overview</h5>
+                  <div class="chart-container">
+                    <canvas id="salesChart"></canvas>
                   </div>
                 </div>
               </div>
-              <div class="row">
-                <div class="col-12 col-md-4"></div>
+            </div>
+
+            <div class="row mt-4">
+              <!-- Turnover -->
+              <div class="col-md-6">
+                <div class="card p-3">
+                  <h5>Turnover</h5>
+                  <p><strong>Total Turnover:</strong> $120,000</p>
+                </div>
               </div>
-            </div> -->
-            <!-- <iframe src="{% url 'mainPage' %}" scrolling="no"></iframe> -->
-          </section>
+
+              <!-- Profit -->
+              <div class="col-md-6">
+                <div class="card p-3">
+                  <h5>Profit</h5>
+                  <p>
+                    <strong>Total Profit:</strong>
+                    <span id="profitAmount"></span>
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
 
         <div class="tab-pane fade" id="tab2">
-          <div class="container my-5">
-            <h1 class="mb-4 text-center">Shipping and Billing Form</h1>
+          <div class="container my-2">
+            <h1 class="mb-4 text-center">Shipping and Billing</h1>
 
             <form method="post" action="{% url 'invoiceGenerate' %}">
               {% csrf_token %}
@@ -645,7 +798,7 @@
         </div>
 
         <div class="tab-pane fade" id="tab3">
-          <div class="container mt-5">
+          <div class="container mt-2">
             <h2 class="text-center mb-4">Inventory Management</h2>
 
             <!-- Add Item Form -->
@@ -658,6 +811,7 @@
                     id="itemId"
                     class="form-control"
                     placeholder="ID"
+                    disabled
                   />
                 </div>
                 <div class="col-md-4">
@@ -733,7 +887,7 @@
         </div>
 
         <div class="tab-pane fade" id="tab4">
-          <div class="container mt-5">
+          <div class="container mt-2">
             <h2 class="text-center mb-4">Sells</h2>
             <table class="table table-bordered table-striped text-center">
               <thead class="table-dark">
@@ -974,6 +1128,7 @@
         </div>
       </div>
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <script>
       document.addEventListener("DOMContentLoaded", function () {
@@ -1096,10 +1251,10 @@
           document.getElementById("tab2-link").classList.add("d-none");
           document.getElementById("tab3-link").classList.add("d-none");
           document.getElementById("tab4-link").classList.add("d-none");
-        } else {
-          updateNewId();
-          updateDate();
+          document.getElementById("topbar").classList.add("d-none");
         }
+        updateDate();
+        updateNewId();
       }
 
       function updateDate() {
@@ -1118,13 +1273,24 @@
       }
 
       function updateNewId() {
-        let table = document.getElementById("inventoryTable");
-        let lastRow = table.querySelectorAll("tr")[table.rows.length - 1]; // Get last <tr>
-        if (lastRow) {
-          let specificTd = lastRow.cells[0]; // Change index to target specific <td>
-          document.getElementById("itemId").value =
-            parseInt(specificTd.innerText) + 1;
+        let tbody = document.getElementById("inventoryTable");
+        if (!tbody || tbody.rows.length === 0) {
+          console.log("No rows found, setting ID to 1.");
+          document.getElementById("itemId").value = 1;
+          return;
         }
+
+        // Select the last row in the table
+        let lastRow = tbody.querySelector("tr:last-child");
+        if (!lastRow) {
+          document.getElementById("itemId").value = 1;
+          return;
+        }
+
+        let firstCell = lastRow.cells[0];
+        let lastId = parseInt(firstCell.innerText.trim(), 10);
+
+        document.getElementById("itemId").value = lastId + 1;
       }
 
       function updateHiddenInput() {
@@ -1134,6 +1300,7 @@
           items.push({
             id: cells[0].textContent,
             name: cells[1].textContent,
+
             quantity: cells[2].textContent,
             rate: cells[3].textContent,
             totalPrice: cells[4].textContent,
@@ -1293,6 +1460,66 @@
           this.style.display = "none";
           document.getElementById("binvoice").value = "yes";
         });
+
+      document.addEventListener("DOMContentLoaded", function () {
+        const ctx = document.getElementById("salesChart").getContext("2d");
+
+        const salesData = {
+          labels: [
+            "Jan",
+            "Feb",
+            "Mar",
+            "Apr",
+            "May",
+            "Jun",
+            "Jul",
+            "Aug",
+            "Sep",
+            "Oct",
+            "Nov",
+            "Dec",
+          ],
+          datasets: [
+            {
+              label: "Monthly Sales",
+              data: [
+                5000, 7000, 6000, 8000, 12000, 10000, 15000, 14000, 13000,
+                11000, 9000, 10000,
+              ], // Example sales data
+              borderColor: "#1e90ff", // Dodger Blue
+              backgroundColor: "rgba(30, 144, 255, 0.2)", // Light transparent blue fill
+              borderWidth: 3,
+              pointBackgroundColor: "#1e90ff",
+              pointRadius: 5,
+              pointHoverRadius: 7,
+              tension: 0.3, // Smooth curves
+            },
+          ],
+        };
+
+        const salesChart = new Chart(ctx, {
+          type: "line",
+          data: salesData,
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+              x: {
+                ticks: { color: "#333" }, // Dark Gray text
+                grid: { color: "rgba(0, 0, 0, 0.1)" }, // Light grid
+              },
+              y: {
+                beginAtZero: true,
+                ticks: { color: "#333" },
+                grid: { color: "rgba(0, 0, 0, 0.1)" },
+              },
+            },
+            plugins: {
+              legend: { labels: { color: "#333" } }, // Dark Gray legend text
+            },
+          },
+        });
+      });
     </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   </body>

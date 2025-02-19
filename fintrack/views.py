@@ -5,3 +5,6 @@ def homepage(request):
   # if request.user.is_anonymous:
   #   return redirect("login.html")
   return render(request,'home.html')
+
+def contactus(request):
+  return render(request,'contactus.html')

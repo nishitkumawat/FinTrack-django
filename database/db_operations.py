@@ -277,11 +277,11 @@ def addInvoice(d):
         print(e)
         return False
     
-def addToSales(company_id,invoiceNo,billerName,billerPhoneNo,billerGstNo,date,item_name,item_rate,item_quantity,totalPrice):
+def addToSales(company_id,invoiceNo,billerName,billerPhoneNo,billerGstNo,date,item_name,item_purchase_price,item_rate,item_quantity,totalPrice):
     global database,cursor
     try:
-        cursor.execute("INSERT INTO sell(company_id, invoice_no,buyer_name, buyer_phone, buyer_gst, date, item_name, item_rate, item_quantity, item_amount) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)",
-                       (company_id,invoiceNo,billerName,billerPhoneNo,billerGstNo,date,item_name,item_rate,item_quantity,totalPrice))
+        cursor.execute("INSERT INTO sell(company_id, invoice_no,buyer_name, buyer_phone, buyer_gst, date, item_name,item_purchase_price, item_rate, item_quantity, item_amount) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)",
+                       (company_id,invoiceNo,billerName,billerPhoneNo,billerGstNo,date,item_name,item_purchase_price,item_rate,item_quantity,totalPrice))
         database.commit()
         return True
     except Exception as e:
@@ -290,7 +290,7 @@ def addToSales(company_id,invoiceNo,billerName,billerPhoneNo,billerGstNo,date,it
     
 def calculateTurnOver(id):
     global database,cursor
-    cursor.execute("SELECT item_amount FROM sell")
+    cursor.execute("SELECT item_amount FROM sell where company_id=%s",(id,))
     result = cursor.fetchall()
     r = 0.0
     for i in result:
@@ -299,7 +299,7 @@ def calculateTurnOver(id):
 
 def calculateInventory(id):
     global database,cursor
-    cursor.execute("SELECT * FROM inventory")
+    cursor.execute("SELECT * FROM inventory where company_id=%s",(id,))
     result = cursor.fetchall()
     r = 0.0
     for i in result:
@@ -316,7 +316,37 @@ def sellTable(id):
         r.append(x)
     return r
 
+def sells(id):
+    global database,cursor
+    cursor.execute("SELECT * FROM sell WHERE company_id = %s", (id,))
+    result = cursor.fetchall()
+    d = dict()
+    for i in result:
+        if i[6] not in d:
+            d[i[6]] = int(i[11])
+        else:
+            d[i[6]] += int(i[11])
+    return d
 
+def getPurchasePrice(company_id,item_id):
+    global database,cursor
+    cursor.execute("SELECT * FROM inventory WHERE company_id = %s and item_id = %s", (company_id,item_id))
+    result = cursor.fetchone()
+    if result:
+        return float(result[4])
+    else:
+        return 0
+    
+def totalPurchase(id):
+    global database,cursor
+    cursor.execute("SELECT * FROM sell WHERE company_id = %s", (id,))
+    result = cursor.fetchall()
+    total = 0.0
+    for i in result:
+        total += float(i[8])*float(i[10])
+    return total
+        
+    
 # if _name__ == "__main__":
 # d = Database()
 # d.create_connection()
