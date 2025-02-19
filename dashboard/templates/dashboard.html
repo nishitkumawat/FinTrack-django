@@ -375,7 +375,7 @@
               data-bs-toggle="tab"
               href="#tab2"
             >
-              <i class="fas fa-file-invoice"></i> Create Bill
+              <i class="fas fa-file-invoice"></i> Create Invoice
             </a>
           </li>
           <li class="nav-item">
@@ -395,7 +395,7 @@
               data-bs-toggle="tab"
               href="#tab4"
             >
-              <i class="fas fa-chart-line"></i> Sales / Purchases
+              <i class="fas fa-chart-line"></i> Sells
             </a>
           </li>
           <li class="nav-item">
@@ -425,24 +425,31 @@
           <div class="container mt-4">
             <div class="row">
               <!-- Inventory Section -->
-              <div class="col-md-4">
-                <div class="card p-3">
-                  <h5>Inventory</h5>
-                  <p><strong>Total Amount:</strong> $50,000</p>
+              <div class="col-lg-4 mb-4">
+                <div class="card shadow-sm p-3">
+                  <h5 class="mb-3">Inventory</h5>
+                  <p><strong>Total Amount: </strong>Rs. {{ inventoryTotal }}</p>
                   <p><strong>Top 3 Quantities:</strong></p>
-                  <ul>
-                    <li>Product A - 500 units</li>
-                    <li>Product B - 300 units</li>
-                    <li>Product C - 200 units</li>
+                  <ul class="list-group">
+                    {% for key, value in topQuantity.items %}
+                    <li
+                      class="list-group-item d-flex justify-content-between align-items-center"
+                    >
+                      {{ key }}
+                      <span class="badge bg-primary rounded-pill"
+                        >{{ value }}</span
+                      >
+                    </li>
+                    {% endfor %}
                   </ul>
                 </div>
               </div>
 
               <!-- Sales Line Graph -->
-              <div class="col-md-8">
-                <div class="card p-3">
-                  <h5>Sales Overview</h5>
-                  <div class="chart-container">
+              <div class="col-lg-8 mb-4">
+                <div class="card shadow-sm p-3">
+                  <h5 class="mb-3">Sales Overview</h5>
+                  <div class="chart-container" style="height: 300px">
                     <canvas id="salesChart"></canvas>
                   </div>
                 </div>
@@ -451,21 +458,39 @@
 
             <div class="row mt-4">
               <!-- Turnover -->
-              <div class="col-md-6">
-                <div class="card p-3">
-                  <h5>Turnover</h5>
-                  <p><strong>Total Turnover:</strong> $120,000</p>
+              <div class="col-md-6 mb-4">
+                <div class="card shadow-sm p-3">
+                  <h5 class="mb-3">Turnover</h5>
+                  <p><strong>Total Turnover: </strong>Rs. {{ turnover }}</p>
                 </div>
               </div>
 
               <!-- Profit -->
-              <div class="col-md-6">
-                <div class="card p-3">
-                  <h5>Profit</h5>
-                  <p>
-                    <strong>Total Profit:</strong>
-                    <span id="profitAmount"></span>
-                  </p>
+              <div class="col-md-6 mb-4">
+                <div class="card shadow-sm p-3">
+                  <h5 class="mb-3">Profit</h5>
+                  <p><strong>Total Profit: </strong>Rs. {{ profit }}</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Profit Progress Bar -->
+            <div class="row mt-4">
+              <div class="col-12">
+                <div class="card shadow-sm p-3">
+                  <div class="progress-container">
+                    <h5>Profit Percentage</h5>
+                    <div class="progress">
+                      <div
+                        class="progress-bar"
+                        id="profitProgressBar"
+                        role="progressbar"
+                        aria-valuemin="0"
+                        aria-valuemax="100"
+                      ></div>
+                    </div>
+                    <p class="progress-text">Turnover is considered as 100%.</p>
+                  </div>
                 </div>
               </div>
             </div>
@@ -894,8 +919,8 @@
                 <tr>
                   <th>Invoice No.</th>
                   <th>Item Name</th>
-                  <th>Quantity</th>
                   <th>Total Price</th>
+                  <th>Quantity</th>
                   <th>Date</th>
                   <th>Buyer Details</th>
                 </tr>
@@ -1185,12 +1210,12 @@
 
               const newRow = document.createElement("tr");
               newRow.innerHTML = `
-                          <td>${selectedItemId}</td>
-                          <td>${selectedItem}</td>
-                          <td>${selectedQuantity}</td>
-                          <td>${selectedPrice.toFixed(2)}</td>
-                          <td>${totalPrice.toFixed(2)}</td>
-                      `;
+                              <td>${selectedItemId}</td>
+                              <td>${selectedItem}</td>
+                              <td>${selectedQuantity}</td>
+                              <td>${selectedPrice.toFixed(2)}</td>
+                              <td>${totalPrice.toFixed(2)}</td>
+                          `;
               document.getElementById("itemTableBody").appendChild(newRow);
               updateHiddenInput();
               dropdown.remove(dropdown.selectedIndex);
@@ -1332,15 +1357,15 @@
 
         let newRow = tbody.insertRow();
         newRow.innerHTML = `
-        <td>${itemId}</td>
-        <td>${itemName}</td>
-        <td>${itemQuantity}</td>
-        <td>${purchasePrice}</td>
-        <td>
-          <button class="btn btn-success btn-sm" onclick="openEditModal(this)">Edit</button>
-          <button class="btn btn-danger btn-sm" onclick="deleteItem(this)">Delete</button>
-        </td>
-      `;
+            <td>${itemId}</td>
+            <td>${itemName}</td>
+            <td>${itemQuantity}</td>
+            <td>${purchasePrice}</td>
+            <td>
+              <button class="btn btn-success btn-sm" onclick="openEditModal(this)">Edit</button>
+              <button class="btn btn-danger btn-sm" onclick="deleteItem(this)">Delete</button>
+            </td>
+          `;
         x = `["${itemId}","${itemName}","${itemQuantity}","${purchasePrice}"]`;
 
         // Clear input fields
@@ -1462,63 +1487,73 @@
         });
 
       document.addEventListener("DOMContentLoaded", function () {
+        // Parse JSON safely
+        const salesGraph = JSON.parse(`{{ sales_graph|escapejs }}`);
+
+        console.log("Parsed salesGraph:", salesGraph);
+
+        // Extract months (keys) and sales (values)
+        const labels = Object.keys(salesGraph); // X-axis: Months
+        const dataValues = Object.values(salesGraph); // Y-axis: Sales
+
+        console.log("Chart Labels:", labels);
+        console.log("Chart Data (₹):", dataValues);
+
         const ctx = document.getElementById("salesChart").getContext("2d");
 
-        const salesData = {
-          labels: [
-            "Jan",
-            "Feb",
-            "Mar",
-            "Apr",
-            "May",
-            "Jun",
-            "Jul",
-            "Aug",
-            "Sep",
-            "Oct",
-            "Nov",
-            "Dec",
-          ],
-          datasets: [
-            {
-              label: "Monthly Sales",
-              data: [
-                5000, 7000, 6000, 8000, 12000, 10000, 15000, 14000, 13000,
-                11000, 9000, 10000,
-              ], // Example sales data
-              borderColor: "#1e90ff", // Dodger Blue
-              backgroundColor: "rgba(30, 144, 255, 0.2)", // Light transparent blue fill
-              borderWidth: 3,
-              pointBackgroundColor: "#1e90ff",
-              pointRadius: 5,
-              pointHoverRadius: 7,
-              tension: 0.3, // Smooth curves
-            },
-          ],
-        };
-
-        const salesChart = new Chart(ctx, {
+        new Chart(ctx, {
           type: "line",
-          data: salesData,
+          data: {
+            labels: labels, // X-axis: Months
+            datasets: [
+              {
+                label: "Monthly Sales (₹)",
+                data: dataValues, // Y-axis: Sales
+                borderColor: "#1e90ff",
+                backgroundColor: "rgba(30, 144, 255, 0.2)",
+                borderWidth: 3,
+                pointBackgroundColor: "#1e90ff",
+                pointRadius: 5,
+                pointHoverRadius: 7,
+                tension: 0.3,
+              },
+            ],
+          },
           options: {
             responsive: true,
             maintainAspectRatio: false,
             scales: {
               x: {
-                ticks: { color: "#333" }, // Dark Gray text
-                grid: { color: "rgba(0, 0, 0, 0.1)" }, // Light grid
+                title: { display: true, text: "Month", color: "#333" },
+                ticks: { color: "#333" },
+                grid: { color: "rgba(0, 0, 0, 0.1)" },
               },
               y: {
+                title: { display: true, text: "Sales (₹)", color: "#333" },
                 beginAtZero: true,
-                ticks: { color: "#333" },
+                ticks: {
+                  color: "#333",
+                  callback: function (value) {
+                    return "₹" + value.toLocaleString();
+                  },
+                },
                 grid: { color: "rgba(0, 0, 0, 0.1)" },
               },
             },
             plugins: {
-              legend: { labels: { color: "#333" } }, // Dark Gray legend text
+              legend: { labels: { color: "#333" } },
             },
           },
         });
+      });
+
+      document.addEventListener("DOMContentLoaded", function () {
+        var progressBar = document.getElementById("profitProgressBar");
+        var x = JSON.parse("{{ profitPerct }}");
+        console.log(x);
+        var profitValue = Math.max(0, Math.min(100, x)); // Ensures valid % range
+        progressBar.style.width = profitValue + "%";
+        progressBar.innerText = profitValue.toFixed(2) + "%";
       });
     </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>

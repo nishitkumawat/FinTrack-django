@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+      crossorigin="anonymous"
+    />
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+      crossorigin="anonymous"
+    ></script>
+    <style>
+      @page {
+        size: A4;
+        margin: 20mm; /* Adjust margins */
+      }
+
+      body {
+        margin: 0;
+        padding: 0;
+        font-size: 12px;
+      }
+
+      .content {
+        width: 100%;
+        height: 100%;
+      }
+
+      h1 {
+        page-break-after: always;
+      }
+      td {
+        max-width: 90mm; /* Half of A4 width (A4 width: 210mm) */
+      }
+
+      h6 {
+        text-align: center;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="container-fluid">
+      <h6>TAX INVOICE</h6>
+      <table class="table table-bordered" id="t1">
+        <tr>
+          <td rowspan="3" colspan="1">
+            <b> {{ company_name }} </b><br />
+            {{ company_address }} <br />
+            Phone No. :{{ phone_no }} <br />
+            Email : {{ email }} <br />
+            GST No. :{{ gst_no }}
+          </td>
+          <td>Invoice No : {{ invoiceNo }}</td>
+          <td>Date : {{ date }}</td>
+        </tr>
+        <tr>
+          <td colspan="2">Mode/Term of payment : {{ paymentMode }}</td>
+        </tr>
+
+        <tr>
+          <td rowspan="3" colspan="2">
+            Bill To:<br />
+            <b>{{ billerName }}</b><br />
+            {{ billerAddress }} <br />
+            Phone No. :{{ billerPhoneNo }} <br />
+            GST No. :{{ gst_no }}
+          </td>
+        </tr>
+
+        <tr>
+          <td rowspan="3" colspan="1">
+            Ship To:<br />
+            <b>{{ billerName }}</b><br />
+            {{ billerAddress }} <br />
+            Phone No. :{{ billerPhoneNo }} <br />
+            GST No. :{{ gst_no }}
+          </td>
+        </tr>
+        <tr></tr>
+        <tr></tr>
+      </table>
+      <table class="table table-bordered" id="t2">
+        <thead>
+          <tr>
+            <th style="width: 100px">SI No.</th>
+            <th style="width: 1500px">Name/Description</th>
+            <th style="width: 250px">Quantity</th>
+            <th style="width: 250px">Rate</th>
+            <th style="width: 300px">Amount</th>
+          </tr>
+        </thead>
+        <tbody class="w-100">
+          {% for value in selectedItems %}
+          <tr>
+            <td>{{ forloop.counter }}</td>
+            <td>{{ value.name }}</td>
+            <td>{{ value.quantity }}</td>
+            <td>{{ value.rate }}</td>
+            <td>{{ value.totalPrice }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+        <tfoot>
+          <tr>
+            <td class="text-end" colspan="4">Total</td>
+            <td>Rs.{{ total }}</td>
+          </tr>
+          <tr>
+            <td class="text-end" colspan="4">SGST</td>
+            <td>Rs.{{tax.0}}</td>
+          </tr>
+          <tr>
+            <td class="text-end" colspan="4">CGST</td>
+            <td>Rs.{{tax.1}}</td>
+          </tr>
+          <tr>
+            <td class="text-end" colspan="4">IGST</td>
+            <td>Rs.{{tax.2}}</td>
+          </tr>
+          <tr>
+            <td class="text-end" colspan="4">Grand Total</td>
+            <td>Rs. {{ grandTotal }}</td>
+          </tr>
+        </tfoot>
+        <tr>
+          <td colspan="6">
+            Amount Chargeable (in words): {{ grandTotalInWords }}
+          </td>
+        </tr>
+      </table>
+      <h1>Hello, {{ a }}!</h1>
+      <p>
+        This is a dynamically generated PDF using Django and WeasyPrint. {{ b }}
+      </p>
+      <form action="{% url 'save_pdf' %}">
+        <button type="submit" class="btn btn-success">SAVE</button>
+      </form>
+    </div>
+  </body>
+</html>

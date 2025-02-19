@@ -98,12 +98,13 @@ def register(username,email,password,phone,company_name,company_address,gst_no):
         print(e)
         return None
     
-def addToInventory (item_id,item_name,item_quantity,item_rate):
+def addToInventory (company_id,item_id,item_name,item_quantity,item_rate):
     global database,cursor
     try:
+        print(company_id,item_id,item_name,item_quantity,item_rate)
         cursor.execute(
             "insert into inventory(company_id,item_id,item_name,item_quantity,item_price) values(%s,%s,%s,%s,%s)",
-            (views.currentUser.company_id,item_id,item_name,item_quantity,item_rate))
+            (company_id,item_id,item_name,item_quantity,item_rate))
         database.commit()
         return True
     except Exception as e:
@@ -345,7 +346,16 @@ def totalPurchase(id):
     for i in result:
         total += float(i[8])*float(i[10])
     return total
-        
+    
+def quantity(id):
+    global database,cursor
+    cursor.execute("SELECT * FROM inventory WHERE company_id = %s", (id,))
+    result = cursor.fetchall()
+    r = dict()
+    for i in result:
+        r[i[2]] = int(i[3])
+    return r
+    
     
 # if _name__ == "__main__":
 # d = Database()

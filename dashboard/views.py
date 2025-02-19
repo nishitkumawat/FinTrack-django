@@ -15,7 +15,7 @@ from collections import defaultdict
 currentUser = None
 d = None
 dashboardDict = dict()
-
+renderInvoice = ''
 # Create your views here.
 def dashboard(request):
     global currentUser,dashboardDict
@@ -23,7 +23,7 @@ def dashboard(request):
     companyLogin()
     portfolio()
     inventory = db.inventory(currentUser.company_id)
-    dashboardDict = {
+    dashboardDict.update({
         'email':currentUser.email,
         'company_name': currentUser.company_name,
         'company_address': currentUser.company_address,
@@ -31,13 +31,9 @@ def dashboard(request):
         'phone_no': currentUser.phone_no,
         'inventory':inventory,
         'invoice_no' : db.newInvoiceNo(currentUser.company_id),
-        'sellTable' : db.sellTable(currentUser.company_id),
-    }
+        'sellTable' : db.sellTable(currentUser.company_id)})
     
-    currentUser.turnover = db.calculateTurnOver(currentUser.company_id)
-    print(currentUser.turnover)
-    inv = db.calculateInventory(currentUser.company_id)
-    print(inv)
+    print(dashboardDict)
     return render(request,"dashboard.html",dashboardDict )
 
 def portfolio():
@@ -55,7 +51,7 @@ def portfolio():
 
     months = []
     year, month = one_year_ago.year, one_year_ago.month
-    for _ in range(11):  # Only 11 months, so we add the present month separately
+    for _ in range(11): 
         label = f"{month_names[month-1]}-{year}"
         months.append(label)
         month += 1
@@ -77,21 +73,31 @@ def portfolio():
                 monthly_totals[label] += amount
 
     print(monthly_totals)
+    graph_json = json.dumps(monthly_totals)
     
-    dashboardDict['sales_graph'] = monthly_totals
+    dashboardDict['sales_graph'] = graph_json
     dashboardDict['turnover'] = turnover
-    dashboardDict['inventory'] = inventory
+    dashboardDict['inventoryTotal'] = inventory
     dashboardDict['profit'] = profit
+    if turnover!=0:
+        dashboardDict['profitPerct'] = (profit/turnover)*100
+    else:
+        dashboardDict['profitPerct'] = 0
+
+    quantity = db.quantity(currentUser.company_id)
+    if quantity:
+        sorted_dict = dict(sorted(quantity.items(), key=lambda item: item[1], reverse=True)[:3])
+        dashboardDict['topQuantity'] = sorted_dict
+    else:
+        dashboardDict['topQuantity'] = {}
 
 def mainPage(request):
     mainPageDict = {}
     return render(request,"mainPage.html",mainPageDict)
 
 def invoiceGenerate(request):
-    global currentUser,d
+    global currentUser,d,renderInvoice
     if request.method == "POST":
-        # form_type = request.POST.get('form_type')
-        # if form_type == 'invoice':
         
         billerName = request.POST.get("billerName")
         billerAddress= request.POST.get("billerAddress")
@@ -159,12 +165,14 @@ def invoiceGenerate(request):
         if binvoice == "yes":
             d = d2
             db.addInvoiceDetailed(d)
+            renderInvoice = 'invoicegenerate.html'
             return render(request,'invoicegenerate.html',d2)
         
         else:
             d = d1
             db.addInvoice(d)
-            return render(request,'invoicegenerate.html',d1)
+            renderInvoice = 'invoicegenerate2.html'
+            return render(request,'invoicegenerate2.html',d1)
 
 def salesEntry(company_id,invoiceNo,billerName,billerPhoneNo,billerGstNo,date,selectedItems):
     
@@ -216,7 +224,7 @@ def updateInventory(data):
             
 
 def addInventory(data):
-    db.addToInventory(data[0],data[1],data[2],data[3])
+    db.addToInventory(currentUser.company_id,data[0],data[1],data[2],data[3])
     
 def deleteInventory(id):
     db.removeFromInventory(currentUser.company_id,id)
@@ -276,8 +284,10 @@ def companyDetails(request):
 
 
 def save_pdf(request):
-    global d
-    html_content = render_to_string('invoicegenerate.html',d)
-    pdf_file_path = 'output.pdf'
+    global d,renderInvoice
+    
+    html_content = render_to_string(renderInvoice,d)
+    name = f"{currentUser.company_id}_{dashboardDict['invoice_no']}"
+    pdf_file_path = f'savedinvoice/{name}_invoice.pdf'
     weasyprint.HTML(string=html_content).write_pdf(pdf_file_path)
     return HttpResponse(f"PDF saved at: {os.path.abspath(pdf_file_path)}")
