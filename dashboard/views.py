@@ -1,6 +1,7 @@
 import json
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import  render
+from dataStructure.ds import BST, HashMap
 from userlogin import views as userLogin_views
 from database import db_operations as db
 from django.views.decorators.csrf import csrf_exempt
@@ -86,7 +87,11 @@ def portfolio():
 
     quantity = db.quantity(currentUser.company_id)
     if quantity:
-        sorted_dict = dict(sorted(quantity.items(), key=lambda item: item[1], reverse=True)[:3])
+        # sorted_dict = dict(sorted(quantity.items(), key=lambda item: item[1], reverse=True)[:3])
+        bst = BST()
+        for key, value in quantity.items():
+            bst.insert(key, value)
+        sorted_dict = bst.get_top_n(3)
         dashboardDict['topQuantity'] = sorted_dict
     else:
         dashboardDict['topQuantity'] = {}
@@ -150,15 +155,60 @@ def invoiceGenerate(request):
         grandTotalInWords = num2words(grandTotal)
         print(grandTotalInWords)
 
-        d1 = {'email':currentUser.email,'company_name': currentUser.company_name,'company_address': currentUser.company_address,'gst_no': currentUser.gst_no,
-            'phone_no': currentUser.phone_no,'billerName':billerName,'billerAddress':billerAddress,
-            'billerPhoneNo':billerPhoneNo,'invoiceNo':invoiceNo,'date':date,'paymentMode':paymentMode,'grandTotalInWords':grandTotalInWords,'selectedItems':itemsList,'tax':tax,'total':totalPrice,'grandTotal':grandTotal}
+        # d1 = {'email':currentUser.email,'company_name': currentUser.company_name,'company_address': currentUser.company_address,'gst_no': currentUser.gst_no,
+        #     'phone_no': currentUser.phone_no,'billerName':billerName,'billerAddress':billerAddress,
+        #     'billerPhoneNo':billerPhoneNo,'invoiceNo':invoiceNo,'date':date,'paymentMode':paymentMode,'grandTotalInWords':grandTotalInWords,'selectedItems':itemsList,'tax':tax,'total':totalPrice,'grandTotal':grandTotal}
         
-        d2 = {'email':currentUser.email,'company_name': currentUser.company_name,'company_address': currentUser.company_address,'gst_no': currentUser.gst_no,
-            'phone_no': currentUser.phone_no,'billerName':billerName,'billerAddress':billerAddress,
-            'billerPhoneNo':billerPhoneNo,'invoiceNo':invoiceNo,'date':date,'paymentMode':paymentMode,
-            'billerGstNo':billerGstNo,'buyerOrderNo':buyerOrderNo,'eWayBillNumber':eWayBillNumber,'eWayBillDate':eWayBillDate,
-            'billOfLading':billOfLading,'motorVechileNumber':motorVechileNumber,'refNo':refNo,'otherRef':otherRef,'grandTotalInWords':grandTotalInWords,'selectedItems':itemsList}  
+        # d2 = {'email':currentUser.email,'company_name': currentUser.company_name,'company_address': currentUser.company_address,'gst_no': currentUser.gst_no,
+        #     'phone_no': currentUser.phone_no,'billerName':billerName,'billerAddress':billerAddress,
+        #     'billerPhoneNo':billerPhoneNo,'invoiceNo':invoiceNo,'date':date,'paymentMode':paymentMode,
+        #     'billerGstNo':billerGstNo,'buyerOrderNo':buyerOrderNo,'eWayBillNumber':eWayBillNumber,'eWayBillDate':eWayBillDate,
+        #     'billOfLading':billOfLading,'motorVechileNumber':motorVechileNumber,'refNo':refNo,'otherRef':otherRef,'grandTotalInWords':grandTotalInWords,'selectedItems':itemsList}  
+
+
+        invoice_map1 = HashMap()
+        invoice_map1.put('email', currentUser.email)
+        invoice_map1.put('company_name', currentUser.company_name)
+        invoice_map1.put('company_address', currentUser.company_address)
+        invoice_map1.put('gst_no', currentUser.gst_no)
+        invoice_map1.put('phone_no', currentUser.phone_no)
+        invoice_map1.put('billerName', billerName)
+        invoice_map1.put('billerAddress', billerAddress)
+        invoice_map1.put('billerPhoneNo', billerPhoneNo)
+        invoice_map1.put('invoiceNo', invoiceNo)
+        invoice_map1.put('date', date)
+        invoice_map1.put('paymentMode', paymentMode)
+        invoice_map1.put('grandTotalInWords', grandTotalInWords)
+        invoice_map1.put('selectedItems', itemsList)
+        invoice_map1.put('tax', tax)
+        invoice_map1.put('total', totalPrice)
+        invoice_map1.put('grandTotal', grandTotal)
+        d1 = invoice_map1.get_all()
+        
+        invoice_map2 = HashMap()
+        invoice_map2.put('email', currentUser.email)
+        invoice_map2.put('company_name', currentUser.company_name)
+        invoice_map2.put('company_address', currentUser.company_address)
+        invoice_map2.put('gst_no', currentUser.gst_no)
+        invoice_map2.put('phone_no', currentUser.phone_no)
+        invoice_map2.put('billerName', billerName)
+        invoice_map2.put('billerAddress', billerAddress)
+        invoice_map2.put('billerPhoneNo', billerPhoneNo)
+        invoice_map2.put('invoiceNo', invoiceNo)
+        invoice_map2.put('date', date)
+        invoice_map2.put('paymentMode', paymentMode)
+        invoice_map2.put('billerGstNo', billerGstNo)
+        invoice_map2.put('buyerOrderNo', buyerOrderNo)
+        invoice_map2.put('eWayBillNumber', eWayBillNumber)
+        invoice_map2.put('eWayBillDate', eWayBillDate)
+        invoice_map2.put('billOfLading', billOfLading)
+        invoice_map2.put('motorVechileNumber', motorVechileNumber)
+        invoice_map2.put('refNo', refNo)
+        invoice_map2.put('otherRef', otherRef)
+        invoice_map2.put('grandTotalInWords', grandTotalInWords)
+        invoice_map2.put('selectedItems', itemsList)
+
+        d2 = invoice_map2.get_all()
 
         salesEntry(currentUser.company_id,invoiceNo,billerName,billerPhoneNo,billerGstNo,date,itemsList)
 
@@ -166,12 +216,14 @@ def invoiceGenerate(request):
             d = d2
             db.addInvoiceDetailed(d)
             renderInvoice = 'invoicegenerate.html'
+            save_pdf()
             return render(request,'invoicegenerate.html',d2)
         
         else:
             d = d1
             db.addInvoice(d)
             renderInvoice = 'invoicegenerate2.html'
+            save_pdf()
             return render(request,'invoicegenerate2.html',d1)
 
 def salesEntry(company_id,invoiceNo,billerName,billerPhoneNo,billerGstNo,date,selectedItems):
@@ -283,7 +335,7 @@ def companyDetails(request):
     return render(request,"companyDetails.html")
 
 
-def save_pdf(request):
+def save_pdf():
     global d,renderInvoice
     
     html_content = render_to_string(renderInvoice,d)

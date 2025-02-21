@@ -29,15 +29,6 @@
         background-color: #f8f9fa;
       }
 
-      .card {
-        height: 250px;
-        transition: transform 0.3s, box-shadow 0.3s;
-      }
-      .card:hover {
-        transform: scale(1.05);
-        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
-        border-color: #0d6efd !important;
-      }
       .homepage-section {
         height: 100vh;
         background-image: url("static/bg3.jpg");
@@ -59,17 +50,6 @@
         background-color: #333;
         color: white;
         border-radius: 15px;
-      }
-
-      @keyframes fadeIn {
-        from {
-          opacity: 0;
-          transform: translateY(20px);
-        }
-        to {
-          opacity: 1;
-          transform: translateY(0);
-        }
       }
 
       .text-container {
@@ -101,6 +81,9 @@
         text-align: left;
       }
       p {
+        text-align: center;
+      }
+      #homep {
         text-align: left;
       }
       .card {
@@ -149,6 +132,24 @@
       .navbar.scrolled {
         background: rgb(48, 48, 48) !important;
       }
+
+      #loginbtn {
+        color: white;
+      }
+      #loginbtn:hover {
+        color: black;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
     </style>
   </head>
   <body
@@ -196,7 +197,8 @@
               <li class="nav-item ms-3">
                 <a
                   href="{% url 'userlogin' %}"
-                  class="nav-link btn btn-outline-dark"
+                  class="nav-link btn btn-outline-light"
+                  id="loginbtn"
                   >Login</a
                 >
               </li>
@@ -210,7 +212,7 @@
         <div class="homepage-section">
           <div class="text-container">
             <h1 class="display-4 fw-bold ms-3 homeh1">Welcome to FINTRACK</h1>
-            <p class="lead mb-4 ms-3">
+            <p class="lead mb-4 ms-3" id="homep">
               A Complete solution for handling your Business.<br />
               It provides you a complete overview of your business<br />
               and helps you to make informed decisions.
@@ -221,7 +223,9 @@
                 class="btn btn-outline-light btn-banner"
                 >Login</a
               >
-              <a href="" class="btn btn-light btn-banner">Learn More</a>
+              <a href="#about" class="btn btn-outline-light btn-banner"
+                >Learn More</a
+              >
             </div>
           </div>
         </div>
@@ -230,100 +234,92 @@
       <div class="container-fluid d-flex justify-content-center">
         <div class="px-3 px-sm-4 px-md-5 py-5">
           <section id="services">
-            <div class="" style="margin: 40px 200px">
+            <div class="" style="margin: 40px 20px">
               <h1 class="m-2">Services</h1>
               <br />
-              <div class="row row-cols-1 row-cols-md-3 g-4">
+              <div
+                class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-3 g-4"
+              >
                 <!-- Card 1 -->
                 <div class="col">
-                  <div class="card h-100 text-center">
+                  <div class="card h-100 text-center shadow-sm">
                     <img
-                      src="static\img1.png"
+                      src="static/img1.png"
                       class="card-img-top"
                       alt="Symbol 1"
                     />
                     <div class="card-body">
                       <h5 class="card-title">INVOICE</h5>
-                      <p class="card-text">
-                        This is a short description for Card 1.
-                      </p>
+                      <p class="card-text">Easy Generation Of Invoice</p>
                     </div>
                   </div>
                 </div>
 
                 <!-- Card 2 -->
                 <div class="col">
-                  <div class="card h-100 text-center">
+                  <div class="card h-100 text-center shadow-sm">
                     <img
-                      src="static\img4.png"
+                      src="static/img4.png"
                       class="card-img-top"
                       alt="Symbol 2"
                     />
                     <div class="card-body">
                       <h5 class="card-title">INVENTORY</h5>
-                      <p class="card-text">
-                        This is a short description for Card 2.
-                      </p>
+                      <p class="card-text">Management Of Inventory</p>
                     </div>
                   </div>
                 </div>
 
                 <!-- Card 3 -->
                 <div class="col">
-                  <div class="card h-100 text-center">
+                  <div class="card h-100 text-center shadow-sm">
                     <img
-                      src="static\img6.png"
+                      src="static/img6.png"
                       class="card-img-top"
                       alt="Symbol 3"
                     />
                     <div class="card-body">
                       <h5 class="card-title">BANKING</h5>
-                      <p class="card-text">
-                        This is a short description for Card 3.
-                      </p>
+                      <p class="card-text">Direct take payments to Bank</p>
                     </div>
                   </div>
                 </div>
 
                 <!-- Card 4 -->
                 <div class="col">
-                  <div class="card h-100 text-center">
+                  <div class="card h-100 text-center shadow-sm">
                     <img
-                      src="static\img5.png"
+                      src="static/img5.png"
                       class="card-img-top"
                       alt="Symbol 4"
                     />
                     <div class="card-body">
                       <h5 class="card-title">HISTORY</h5>
-                      <p class="card-text">
-                        This is a short description for Card 4.
-                      </p>
+                      <p class="card-text">All sells History is available</p>
                     </div>
                   </div>
                 </div>
 
                 <!-- Card 5 -->
                 <div class="col">
-                  <div class="card h-100 text-center">
+                  <div class="card h-100 text-center shadow-sm">
                     <img
-                      src="static\img2.png"
+                      src="static/img2.png"
                       class="card-img-top"
                       alt="Symbol 5"
                     />
                     <div class="card-body">
                       <h5 class="card-title">PORTFOLIO</h5>
-                      <p class="card-text">
-                        This is a short description for Card 5.
-                      </p>
+                      <p class="card-text">Portfolio with interactive charts</p>
                     </div>
                   </div>
                 </div>
 
                 <!-- Card 6 -->
                 <div class="col">
-                  <div class="card h-100 text-center">
+                  <div class="card h-100 text-center shadow-sm">
                     <img
-                      src="static\img3.png"
+                      src="static/img3.png"
                       class="card-img-top"
                       alt="Symbol 6"
                     />
@@ -341,7 +337,7 @@
               <div class="row justify-content-center">
                 <div class="col-md-8">
                   <img
-                    src="static/shield-icon.png"
+                    src="static/shield.png"
                     alt="Privacy Shield"
                     class="mb-3"
                     width="60"
@@ -512,13 +508,6 @@
               </div>
             </div>
           </section>
-
-          <section id="contact">
-            <div>
-              <h1>Section 4</h1>
-              <p>This is the final section. Thanks for visiting!</p>
-            </div>
-          </section>
         </div>
       </div>
       <!-- Footer -->
@@ -526,17 +515,18 @@
         <div class="container">
           <div class="row">
             <div class="col-lg-4 mb-4">
-              <h5>About SportsEdge</h5>
-              <p>
-                Your premier destination for comprehensive sports coverage,
-                real-time updates, and expert analysis.
+              <h5>About FinTrack</h5>
+              <p style="text-align: left">
+                Your go-to platform for seamless financial management, real-time
+                insights, and expert-driven analysis to keep your business on
+                track.
               </p>
             </div>
             <div class="col-lg-4 mb-4">
               <h5>Quick Links</h5>
               <ul class="list-unstyled">
                 <li>
-                  <a href="/about" class="text-decoration-none text-white-50"
+                  <a href="#about" class="text-decoration-none text-white-50"
                     >About Us</a
                   >
                 </li>
@@ -548,12 +538,12 @@
                   >
                 </li>
                 <li>
-                  <a href="/privacy" class="text-decoration-none text-white-50"
+                  <a href="" class="text-decoration-none text-white-50"
                     >Privacy Policy</a
                   >
                 </li>
                 <li>
-                  <a href="/terms" class="text-decoration-none text-white-50"
+                  <a href="" class="text-decoration-none text-white-50"
                     >Terms of Service</a
                   >
                 </li>
@@ -572,7 +562,7 @@
           <hr class="mt-4 mb-3 border-secondary" />
           <p class="text-center text-white-50 mb-0">
             &copy; <span id="footerYear"></span>
-            <span class="fw-bold">SportsEdge</span>. All Rights Reserved.
+            <span class="fw-bold">FinTrack</span>. All Rights Reserved.
           </p>
         </div>
       </footer>

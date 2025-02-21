@@ -124,24 +124,6 @@
         left: 0;
       }
 
-      @media (max-width: 768px) {
-        .sidebar {
-          position: relative;
-          min-width: 100%;
-          max-width: 100%;
-          height: auto;
-        }
-        .main-content {
-          margin-left: 0;
-        }
-        .tax-columns {
-          flex-direction: column;
-        }
-        .form-container {
-          padding: 15px;
-          margin: 0 10px;
-        }
-      }
       #itemTable th,
       #itemTable td {
         text-align: center;
@@ -296,15 +278,6 @@
       }
 
       /* Responsive: Adjust when sidebar collapses */
-      @media (max-width: 768px) {
-        .topbar {
-          display: none; /* Hides the top bar on small screens */
-        }
-        .main-content {
-          margin-left: 0;
-          padding-top: 0; /* Adjust if needed */
-        }
-      }
 
       .card {
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -329,6 +302,31 @@
         /* Mobile devices */
         .chart-container {
           height: 220px;
+        }
+      }
+      @media (max-width: 768px) {
+        .topbar {
+          display: none; /* Hides the top bar on small screens */
+        }
+        .main-content {
+          margin-left: 0;
+          padding-top: 0; /* Adjust if needed */
+        }
+        .sidebar {
+          position: relative;
+          min-width: 100%;
+          max-width: 100%;
+          height: auto;
+        }
+        .main-content {
+          margin-left: 0;
+        }
+        .tax-columns {
+          flex-direction: column;
+        }
+        .form-container {
+          padding: 15px;
+          margin: 0 10px;
         }
       }
     </style>

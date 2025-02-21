@@ -44,7 +44,7 @@
         <img src="../../static/logo.png" class="" width="70px" alt="" />
       </div>
       <h4 class="text-center my-3">Sign Up</h4>
-      <form action="{% url 'signup' %}" method="post">
+      <form action="{% url 'signup' %}" method="post" id="signup-form">
         {% csrf_token %}
         <div class="mb-3">
           <label for="signup-fullname" class="form-label">Full Name</label>
@@ -104,4 +104,54 @@
       </div>
     </div>
   </body>
+
+  <script>
+    document
+      .getElementById("signup-form")
+      .addEventListener("submit", function (e) {
+        e.preventDefault(); // Prevent form submission
+
+        let password = document.getElementById("signup-password").value;
+        let confirmPassword = document.getElementById(
+          "signup-confirm-password"
+        ).value;
+
+        // Password validation
+        if (password.length < 8) {
+          alert("Error: Password must be at least 8 characters long.");
+          return;
+        }
+
+        if (!/[A-Z]/.test(password)) {
+          alert("Error: Password must contain at least one uppercase letter.");
+          return;
+        }
+
+        if (!/[a-z]/.test(password)) {
+          alert("Error: Password must contain at least one lowercase letter.");
+          return;
+        }
+
+        if (!/\d/.test(password)) {
+          alert("Error: Password must contain at least one number.");
+          return;
+        }
+
+        if (!/[@$!%*?&]/.test(password)) {
+          alert(
+            "Error: Password must contain at least one special character (@$!%*?&)."
+          );
+          return;
+        }
+
+        // Confirm password validation
+        if (password !== confirmPassword) {
+          alert("Error: Passwords do not match.");
+          return;
+        }
+
+        alert("Signup Successful! 🎉"); // Success alert
+        this.submit(); // Submit form if validation passes
+      });
+  </script>
 </html>
