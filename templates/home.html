@@ -1,4 +1,6 @@
 <!DOCTYPE html>
+
+{% load static %}
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -166,7 +168,7 @@
       >
         <div class="container-fluid">
           <a class="navbar-brand ms-3 bg-img" href="#home">
-            <img src="static/logo.png" alt="Logo" height="50px" />
+            <img src="{% static 'logo1.png' %}" alt="Logo" height="50px" />
           </a>
           <button
             class="navbar-toggler"
@@ -223,7 +225,7 @@
                 class="btn btn-outline-light btn-banner"
                 >Login</a
               >
-              <a href="#about" class="btn btn-outline-light btn-banner"
+              <a href="#about" class="ms-4 btn btn-outline-light btn-banner"
                 >Learn More</a
               >
             </div>

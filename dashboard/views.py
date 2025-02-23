@@ -96,10 +96,6 @@ def portfolio():
     else:
         dashboardDict['topQuantity'] = {}
 
-def mainPage(request):
-    mainPageDict = {}
-    return render(request,"mainPage.html",mainPageDict)
-
 def invoiceGenerate(request):
     global currentUser,d,renderInvoice
     if request.method == "POST":
@@ -124,7 +120,7 @@ def invoiceGenerate(request):
         
         
         
-        binvoice = request.POST.get("binvoices")
+        binvoice = request.POST.get("binvoice")
         
         selected_items = request.POST.get("selectedItems")
         itemsList = eval(f"{selected_items}")
@@ -156,8 +152,8 @@ def invoiceGenerate(request):
         print(grandTotalInWords)
 
         # d1 = {'email':currentUser.email,'company_name': currentUser.company_name,'company_address': currentUser.company_address,'gst_no': currentUser.gst_no,
-        #     'phone_no': currentUser.phone_no,'billerName':billerName,'billerAddress':billerAddress,
-        #     'billerPhoneNo':billerPhoneNo,'invoiceNo':invoiceNo,'date':date,'paymentMode':paymentMode,'grandTotalInWords':grandTotalInWords,'selectedItems':itemsList,'tax':tax,'total':totalPrice,'grandTotal':grandTotal}
+        #         'phone_no': currentUser.phone_no,'billerName':billerName,'billerAddress':billerAddress,
+        #         'billerPhoneNo':billerPhoneNo,'invoiceNo':invoiceNo,'date':date,'paymentMode':paymentMode,'grandTotalInWords':grandTotalInWords,'selectedItems':itemsList,'tax':tax,'total':totalPrice,'grandTotal':grandTotal}
         
         # d2 = {'email':currentUser.email,'company_name': currentUser.company_name,'company_address': currentUser.company_address,'gst_no': currentUser.gst_no,
         #     'phone_no': currentUser.phone_no,'billerName':billerName,'billerAddress':billerAddress,

@@ -25,5 +25,4 @@ urlpatterns = [
     path('companyDetails/',views.companyDetails,name='companyDetails'),
     path('handle-action/', views.handle_action, name='handle-action'),
     path("save-pdf/", views.save_pdf, name="save_pdf"),
-    path("mainPage/", views.mainPage, name="mainPage"),
 ]

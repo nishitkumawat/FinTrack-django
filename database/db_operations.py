@@ -259,6 +259,7 @@ def inventory(company_id):
 def addInvoiceDetailed(d):
     global database,cursor
     try:
+        print("invoice added to db")
         cursor.execute("INSERT INTO invoice(company_id, invoice_no, biller_name, biller_address, biller_phoneno, date, payment_mode, selected_items, total, grand_total, biller_gst_no, buyer_order_no, eWay_bill_number, eWay_bill_date, bill_of_lading, motor_vechile_number, ref_no, other_ref) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)",
                        (views.currentUser.company_id,d["invoiceNo"],d["billerName"],d['billerAddress'],d['billerPhoneNo'],d['date'],d['paymentMode'], json.dumps(d['selectedItems'])  ,d['total'],d['grandTotal'], d['biller_gst_no'],d['buyer_order_no'],d['eWay_bill_number'],d['eWay_bill_date'],d['bill_of_lading'],d['motor_vechile_number'],d['ref_no'],d['other_ref']))
         database.commit()                                                                                                                                                                                                                                          
